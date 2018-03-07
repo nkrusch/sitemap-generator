@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sitemap Generator</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+
+    <img class="icon" src="icons/128x128.png" alt="sitemap-generator" />
+    <h5>Configure your Session</h5> 
+
+    <div class="content">
+        <div>
+            <label for="basic-url">Website URL</label> 
+            <input type="text" class="form-control" name="url" placeholder="Enter absolute url starting with http or https">
+            <div id="url-error" class="invalid-feedback"></div>
+        </div>
+    </div>
+
+    <span class="button" id="start">Start</span>
+    <script src="setup.js"></script>
+
+</body>
+
+</html>
