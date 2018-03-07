@@ -1,4 +1,4 @@
-let paths = require('./gulp.config.json');
+let paths = require('./config/gulp.config.json');
 let semver = require('semver');
 let gulp = require('gulp');
 let del = require('del');
@@ -6,7 +6,6 @@ let fs = require('fs');
 let webpack = require('webpack-stream');
 let $ = require('gulp-load-plugins')();
 let argv = require('yargs').argv;
-
 let isProd = (argv.env === 'build');
 let isBump = isProd && (argv.patch || argv.major || argv.minor);
 
@@ -18,23 +17,11 @@ gulp.task('default', [
     'build-html',
     'build-css',
     'build-js',
-    'gen-docs',
     'watch'
 ]);
 
 gulp.task('release', function () {
     let version = JSON.parse(fs.readFileSync(paths.package, 'utf8')).version;
-
-    fs.readFile(paths.readme, 'utf8', function (err, data) {
-        if (err) {
-            return console.log(err);
-        }
-        let result = data.replace(/latest-v[0-9\.]+/, "latest-v" + version);
-        fs.writeFile(paths.readme, result, 'utf8', function (err) {
-            if (err) return console.log(err);
-        });
-    });
-
     return gulp.src(paths.dist + '/**/*')
         .pipe($.zip(version + '.zip'))
         .pipe(gulp.dest(paths.releases + '/'));
@@ -42,8 +29,7 @@ gulp.task('release', function () {
 
 gulp.task('watch', function () {
     if (!argv.watch) return;
-    gulp.watch(paths.docs_toc, ['gen-docs']);
-    gulp.watch(paths.js, ['build-js', 'gen-docs']);
+    gulp.watch(paths.js, ['build-js']);
     gulp.watch(paths.html, ['build-html']);
     gulp.watch(paths.scss, ['build-css']);
     gulp.watch(paths.locales + '**/*.json', ['copy-locales']);
@@ -58,7 +44,6 @@ gulp.task('clean', function () {
 gulp.task('copy-manifest', function () {
     if (isBump) {
         let step = argv.patch ? 'patch' : (argv.major ? 'major' : 'minor');
-        let pkg = JSON.parse(fs.readFileSync(paths.package, 'utf8'));
         let manifest = JSON.parse(fs.readFileSync(paths.manifest, 'utf8'));
         let version_name = semver.inc(manifest.version, step)
         let tmp = paths.manifest.split("/"); tmp.pop();
@@ -159,10 +144,3 @@ gulp.task('build-js', function () {
             path.basename = "content"
         })).pipe(gulp.dest(paths.dist));
 })
-
-gulp.task('gen-docs', function () {
-    let command = "documentation build src/** -f md -o docs/docs.md -c docs/.docs.yml";
-    let exec = require('child_process').exec;
-    exec(command, function (err, stdout, stderr) {
-    });
-});

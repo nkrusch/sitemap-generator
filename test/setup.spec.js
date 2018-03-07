@@ -10,7 +10,7 @@ describe('Setup Page', () => {
     before(() => {
         window.chrome = chrome;
         document.documentElement.innerHTML = require('fs')
-            .readFileSync('./src/setup.html', 'utf8');
+            .readFileSync('./src/templates/setup.html', 'utf8');
         Setup = require('../src/ui/setup.js');
         chrome.flush();
     });

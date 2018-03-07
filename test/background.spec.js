@@ -1,9 +1,9 @@
 import chrome from 'sinon-chrome';
 import chai from 'chai';
-import BackgroundEvents from '../src/background/events.js';
-import BackgroundApi from '../src/background/backgroundApi.js';
-import Generator from '../src/background/generator.js';
-import backgroundApi from '../src/background/backgroundApi.js';
+import BackgroundEvents from '../src/background/events';
+import BackgroundApi from '../src/background/backgroundApi';
+import Generator from '../src/background/generator';
+import backgroundApi from '../src/background/backgroundApi';
 
 chai.expect();
 require('jsdom-global')();

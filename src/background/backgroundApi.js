@@ -4,13 +4,13 @@ import Generator from './generator.js';
 let setupWindow, generator;
 
 /**
- * @namespace
+ * @class
  */
-export default class backgroundApi {
+class BackgroundApi {
 
     constructor() {
-        window.chrome.runtime.onMessage.addListener(backgroundApi.launchRequest);
-        window.chrome.browserAction.onClicked.addListener(backgroundApi.openSetupPage);
+        window.chrome.runtime.onMessage.addListener(BackgroundApi.launchRequest);
+        window.chrome.browserAction.onClicked.addListener(BackgroundApi.openSetupPage);
     }
 
     /**
@@ -53,7 +53,7 @@ export default class backgroundApi {
         window.chrome.permissions.request({
             permissions: ['tabs'],
             origins: [config.requestDomain]
-        }, (granted) => backgroundApi.handleGrantResponse(granted, config));
+        }, (granted) => BackgroundApi.handleGrantResponse(granted, config));
         return true;
     }
 
@@ -64,9 +64,9 @@ export default class backgroundApi {
      * @param {Object} config - runtime settings
      */
     static handleGrantResponse(granted, config) {
-        backgroundApi.closeSetupWindow();
+        BackgroundApi.closeSetupWindow();
         if (granted) {
-            return backgroundApi.onStartGenerator(config);
+            return BackgroundApi.onStartGenerator(config);
         }
         window.alert(window.chrome.i18n.getMessage('permissionNotGranted'));
         return false;
@@ -100,7 +100,7 @@ export default class backgroundApi {
      */
     static onStartGenerator(config) {
         if (!generator) {
-            config.callback = backgroundApi.onCrawlComplete;
+            config.callback = BackgroundApi.onCrawlComplete;
             generator = new Generator(config);
             generator.start();
             return generator;
@@ -108,3 +108,5 @@ export default class backgroundApi {
         return false;
     }
 }
+
+export default BackgroundApi;

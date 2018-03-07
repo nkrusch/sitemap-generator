@@ -1,9 +1,9 @@
 const downloadsPage = 'chrome://downloads';
 
 /**
- * @namespace
+ * @class
  */
-export default class GeneratorUtils {
+class GeneratorUtils {
 
     /**
      * @description move url to a specific processing queue
@@ -89,3 +89,5 @@ export default class GeneratorUtils {
     }
 
 }
+
+export default GeneratorUtils;

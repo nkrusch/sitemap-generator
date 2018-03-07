@@ -2,10 +2,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const env = require('yargs').argv.env;
-// const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 let plugins = (env !== 'build') ? [] : [];
-  // new UglifyJsPlugin({ minimize: true })
-// ];
 
 module.exports = {
   devtool: 'source-map',

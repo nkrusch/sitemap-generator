@@ -1,9 +1,9 @@
 let hasFired, baseUrl = '';
 
 /**
- * @namespace
+ * @class
  */
-export default class Crawler {
+class Crawler {
 
     constructor() {
 
@@ -120,3 +120,5 @@ export default class Crawler {
 }
 
 (() => new Crawler())();
+
+export default Crawler;

@@ -4,16 +4,14 @@
   "releases": "./releases",
   "manifest": "./src/manifest.json",
   "package": "./package.json",
-  "webpack": "./webpack.config.js",
-  "readme": "./docs/readme.md",
+  "webpack": "./config/webpack.config.js",
   "js": "./src/**/*.js",
   "html": "./src/**/*.html",
   "scss": "./src/**/*.scss",
   "icons": [
-    "./assets/img/icons/**/*.png",
-    "./assets/img/icons/**/*.svg"
+    "./assets/img//**/*.png",
+    "./assets/img/**/*.svg"
   ],
-  "docs_toc":"./docs/.docs.yml",
   "locales": "./assets/locales/",
   "locales_list": [
     "en",

@@ -1,17 +1,16 @@
+# Sitemap Generator
 
-<img src="https://raw.githubusercontent.com/pikkumyy/sitemap-generator/master/assets/img/promo/screenshot_2.png" alt="Sitemap Generator" style="display:table; margin:10px auto;" />
+Generate sitemaps using Chrome browser. Especially intended for generating sitemaps for single-page apps made with react, angular, etc.
+
+[<img src="https://travis-ci.org/pikkumyy/sitemap-generator.svg?branch=master">](https://travis-ci.org/pikkumyy/sitemap-generator)
+[<img src="http://inch-ci.org/github/pikkumyy/sitemap-generator.svg?branch=master">](https://inch-ci.org/github/pikkumyy/sitemap-generator)
+[<img src="https://coveralls.io/repos/github/pikkumyy/sitemap-generator/badge.svg?branch=master">](https://coveralls.io/github/pikkumyy/sitemap-generator?branch=master)
+[<img src="https://api.codeclimate.com/v1/badges/ae33294f981eaf9303b6/maintainability">](https://codeclimate.com/github/pikkumyy/sitemap-generator/maintainability)
+[<img src="https://david-dm.org/pikkumyy/sitemap-generator.svg">](https://david-dm.org/pikkumyy/sitemap-generator)
+[<img src="https://david-dm.org/pikkumyy/sitemap-generator/dev-status.svg">](https://david-dm.org/pikkumyy/sitemap-generator?type=dev)
+[<img src="https://img.shields.io/chrome-web-store/v/hcnjemngcihnhncobgdgkkfkhmleapah.svg">](https://chrome.google.com/webstore/detail/hcnjemngcihnhncobgdgkkfkhmleapah)
+[<img src="https://img.shields.io/github/commits-since/pikkumyy/sitemap-generator/latest.svg">](https://github.com/pikkumyy/sitemap-generator)
  
-![alt text](https://img.shields.io/badge/latest-v0.0.4-55acee.svg "version") 
-[![Build Status](https://travis-ci.org/pikkumyy/sitemap-generator.svg?branch=master)](https://travis-ci.org/pikkumyy/sitemap-generator) 
-[![Docs](http://inch-ci.org/github/pikkumyy/sitemap-generator.svg?branch=master)](https://inch-ci.org/github/pikkumyy/sitemap-generator)
-[![Coverage Status](https://coveralls.io/repos/github/pikkumyy/sitemap-generator/badge.svg)](https://coveralls.io/github/pikkumyy/sitemap-generator)
-[![Maintainability](https://api.codeclimate.com/v1/badges/b2a166051a56c875499c/maintainability)](https://codeclimate.com/github/pikkumyy/sitemap-generator/maintainability)[![dependencies Status](https://david-dm.org/pikkumyy/sitemap-generator/status.svg)](https://david-dm.org/pikkumyy/sitemap-generator)
-[![devDependencies Status](https://david-dm.org/pikkumyy/sitemap-generator/dev-status.svg)](https://david-dm.org/pikkumyy/sitemap-generator?type=dev)
-
-**Generate sitemaps using Chrome browser. Especially intended for generating sitemaps for dynamic single-page applications (SPAs).**
-
-This extension lets you generate a sitemap for any public website right in the browser. While generating the sitemap, the extension renders the website pages and waits for javascript to load, making it great for crawling dynamic single-page applications.
-
 ## Installation
 
 The latest version is available for installation at Chrome Web Store.

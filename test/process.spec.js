@@ -10,7 +10,7 @@ describe('Process Page', () => {
     before(() => {
         window.chrome = chrome;
         document.documentElement.innerHTML = require('fs')
-            .readFileSync('./src/process.html', 'utf8');
+            .readFileSync('./src/templates/process.html', 'utf8');
         global.setTimeout = () => { };
         global.setInterval = () => { };
         Process = require('../src/ui/process.js');

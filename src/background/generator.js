@@ -1,5 +1,5 @@
-import CenteredPopup from './centeredPopup.js';
-import GeneratorUtils from './generatorUtils.js';
+import CenteredPopup from './centeredPopup';
+import GeneratorUtils from './generatorUtils';
 
 let url,
     requestDomain,
@@ -14,7 +14,7 @@ let url,
     lists;
 
 /**
- * @namespace
+ * @class
  * @description This module crawls some website and generates a sitemap
  * for it. The process works as follows:
  *
@@ -47,7 +47,7 @@ let url,
  * @param {function} config.callback - *(optional)* function to call when sitemap
  * generation has completed
  */
-export default class Generator {
+class Generator {
 
     constructor(config) {
         url = config.url;
@@ -422,3 +422,5 @@ export default class Generator {
     }
 
 }
+
+export default Generator;

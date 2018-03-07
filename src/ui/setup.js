@@ -1,8 +1,8 @@
 /**
- * @namespace
+ * @class
  * @description This module is used to configure runtime params for sitemap generation
  */
-export default class Setup {
+class Setup {
 
     constructor() {
 
@@ -114,3 +114,5 @@ export default class Setup {
 }
 
 (() => new Setup())();
+
+export default Setup;

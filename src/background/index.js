@@ -1,8 +1,5 @@
-import BackgroundApi from './backgroundApi.js';
-import BackgroundEvents from './events.js';
-import Generator from './generator.js';
+import BackgroundApi from './backgroundApi';
+import BackgroundEvents from './events';
 
 (() => new BackgroundApi())();
 (() => new BackgroundEvents())();
-
-export { BackgroundApi, BackgroundEvents, Generator };

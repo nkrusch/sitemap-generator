@@ -1,12 +1,12 @@
 /**
- * @namespace
+ * @class
  * @description Listens and responds to interesting Chrome runtime events
  */
-export default class backgroundEvents {
+class BackgroundEvents {
 
     constructor() {
         window.chrome.runtime.onInstalled.addListener(
-            backgroundEvents.onInstalledEvent);
+            BackgroundEvents.onInstalledEvent);
     }
 
     /**
@@ -16,9 +16,11 @@ export default class backgroundEvents {
      */
     static onInstalledEvent(details) {
         if (details.reason === 'install') {
-            let introUrl = 'https://sneeakco.github.io/sitemap-generator/intro';
+            let introUrl = window.chrome.runtime.getURL('intro.html');
 
             window.chrome.tabs.create({ url: introUrl });
         }
     }
 }
+
+export default BackgroundEvents;

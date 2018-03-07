@@ -1,8 +1,8 @@
 /**
- * @namespace
+ * @class
  * @description This module is used to communicate with the generator while crawling is ongoing.
  */
-export default class Process {
+class Process {
 
     constructor() {
 
@@ -42,3 +42,5 @@ export default class Process {
 }
 
 (() => new Process())();
+
+export default Process;
