@@ -30,7 +30,7 @@ class CenteredPopup {
      * @param {number} width - width of the new window (px)
      * @param {number} height - height of the new window (px)
      * @param {String} url - url to open
-     * @param {String]} type - enum. "popup" or "normal" - defaults to popup
+     * @param {String} type - enum "popup" or "normal" - defaults to popup
      * @returns {Promise}
      */
     static open(width, height, url, type) {
