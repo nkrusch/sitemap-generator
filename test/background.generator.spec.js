@@ -30,10 +30,10 @@ describe('Generator', () => {
         expect(() => { generator.onComplete() }).to.not.throw();
     });
     it('should report status without error', () => {
-        expect(() => { generator.status() }).to.not.throw();
+        expect(() => { Generator.status() }).to.not.throw();
     });
     it('should handle noindex without error', () => {
-        expect(() => { generator.noindex(url) }).to.not.throw();
+        expect(() => { Generator.noindex(url) }).to.not.throw();
     });
     it('should receive urls without error', () => {
         expect(() => { generator.urlMessage([testPages.a, testPages.d], defaultSender) }).to.not.throw();

@@ -285,7 +285,6 @@ class Generator {
 
                 if (success || error) {
                     GeneratorUtils.listAdd(u, lists.completedUrls);
-
                     if (success) {
                         GeneratorUtils.listAdd(u, lists.successUrls);
                     }
