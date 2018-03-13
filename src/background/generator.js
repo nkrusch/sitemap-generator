@@ -75,32 +75,6 @@ class Generator {
     }
 
     /**
-     * @description Listen to messages from the browser tabs
-     * @see {@link https://developer.chrome.com/apps/runtime#event-onMessage|onMessage event}.
-     * @param request - message parameters
-     * @param request.terminate - stops generator
-     * @param request.status - gets current processing status
-     * @param request.urls - receive list of urls from crawler
-     * @param request.noindex - tells generator not to index some url, see
-     * @param {Object} sender -  message sender
-     * @param {function?} sendResponse - callback function
-     */
-    generatorApi(request, sender, sendResponse) {
-        if (request.terminate) {
-            this.onComplete();
-        } else if (request.noindex) {
-            Generator.noindex(request.noindex);
-        } else if (request.urls) {
-            this.urlMessage(request.urls, sender);
-        } else if (request.status) {
-            return sendResponse(Generator.status());
-        } else if (request.crawlUrl) {
-            return sendResponse(url);
-        }
-        return false;
-    }
-
-    /**
      * @description Initiates crawling of some website
      */
     start() {
@@ -132,6 +106,32 @@ class Generator {
     }
 
     /**
+     * @description Listen to messages from the browser tabs
+     * @see {@link https://developer.chrome.com/apps/runtime#event-onMessage|onMessage event}.
+     * @param request - message parameters
+     * @param request.terminate - stops generator
+     * @param request.status - gets current processing status
+     * @param request.urls - receive list of urls from crawler
+     * @param request.noindex - tells generator not to index some url, see
+     * @param {Object} sender -  message sender
+     * @param {function?} sendResponse - callback function
+     */
+    generatorApi(request, sender, sendResponse) {
+        if (request.terminate) {
+            this.onComplete();
+        } else if (request.noindex) {
+            Generator.noindex(request.noindex);
+        } else if (request.urls) {
+            this.urlMessage(request.urls, sender);
+        } else if (request.status) {
+            return sendResponse(Generator.status());
+        } else if (request.crawlUrl) {
+            return sendResponse(url);
+        }
+        return false;
+    }
+
+    /**
      * @description Get stats about ongoing processing status
      */
     static status() {
@@ -160,6 +160,29 @@ class Generator {
     }
 
     /**
+     * @description handler when http request returns successful status code
+     * @param {String} url - the url that succeeded
+     */
+    static onUrlSuccess(url) {
+        GeneratorUtils.listAdd(url, lists.successUrls);
+    }
+
+    /**
+     * @description handler when http request returns error status code
+     * @param {String} url - the url that succeeded
+     */
+    static onUrlError(url) {
+        GeneratorUtils.listAdd(url, lists.errorHeaders);
+    }
+
+    /**
+     * @description When process completes, generate the sitemap file
+     */
+    static makeSitemap() {
+        return GeneratorUtils.makeSitemap(url, lists.successUrls);
+    }
+
+    /**
      * @description When url message is received, process urls,
      * then close tab that sent the message
      */
@@ -172,11 +195,10 @@ class Generator {
     }
 
     /**
-     * @description execute everytime when processing is done,
-     * independent of why processing ended
+     * @description this method will kill any ongoing
+     * generator and/or wrap up when processing is done
      */
     onComplete() {
-
         if (terminating) {
             return;
         }
@@ -185,26 +207,18 @@ class Generator {
         clearInterval(progressInterval);
 
         (function closeRenderer() {
-            window.chrome.tabs.query({
-                windowId: targetRenderer,
-                url: requestDomain
-            }, function (result) {
-                if (result.length > 0) {
-                    for (let i = 0; i < result.length; i++) {
-                        window.chrome.tabs.remove(result[i].id);
-                    }
-                    setTimeout(closeRenderer, 250);
-                    return;
-                }
-                setTimeout(() => {
-                    requestListener.destroy();
-                    if (onCompleteCallback) {
+            GeneratorUtils.getExistingTabs(targetRenderer, requestDomain,
+                (result) => {
+                    if (result.length) {
+                        GeneratorUtils.closeTabs(result);
+                        setTimeout(closeRenderer, 250);
+                    } else {
+                        requestListener.destroy();
                         onCompleteCallback();
+                        window.chrome.windows.remove(
+                            targetRenderer, Generator.makeSitemap);
                     }
-                    window.chrome.windows.remove(targetRenderer,
-                        () => GeneratorUtils.makeSitemap(url, lists.successUrls));
-                }, 1000);
-            });
+                });
         }());
     }
 
@@ -318,22 +332,6 @@ class Generator {
             // if url makes it this far add it to queue
             GeneratorUtils.listAdd(u, lists.processQueue);
         });
-    }
-
-    /**
-     * @description handler when http request returns successful status code
-     * @param {String} url - the url that succeeded
-     */
-    static onUrlSuccess(url) {
-        GeneratorUtils.listAdd(url, lists.successUrls);
-    }
-
-    /**
-     * @description handler when http request returns error status code
-     * @param {String} url - the url that succeeded
-     */
-    static onUrlError(url) {
-        GeneratorUtils.listAdd(url, lists.errorHeaders);
     }
 }
 

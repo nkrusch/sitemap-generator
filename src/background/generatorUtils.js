@@ -105,6 +105,31 @@ class GeneratorUtils {
         }
         return '';
     }
+
+    /**
+     * @description Remove tabs
+     * @param {Array<Object>} tabArray - chrome.tabs
+     */
+    static closeTabs(tabArray) {
+        if (tabArray && tabArray.length) {
+            for (let i = 0; i < tabArray.length; i++) {
+                window.chrome.tabs.remove(tabArray[i].id);
+            }
+        }
+    }
+
+    /**
+     * @description Get all existing tabs based on window id
+     * @param {Number} windowId
+     * @param {String} domain - limit matches by domain
+     * @param {function} callback - response handler
+     */
+    static getExistingTabs(windowId, domain, callback) {
+        window.chrome.tabs.query({
+            windowId: windowId,
+            url: domain
+        }, callback);
+    }
 }
 
 export default GeneratorUtils;
