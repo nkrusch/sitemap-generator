@@ -1,7 +1,6 @@
 import chrome from 'sinon-chrome';
 import chai from 'chai';
 import Generator from '../src/background/generator';
- 
 const expect = chai.expect;
 
 let generator, url = "https://www.test.com/",
@@ -13,8 +12,7 @@ let generator, url = "https://www.test.com/",
         d: "https://www.nottest.com/index.html"
     },
     defaultConfig = { url: url, requestDomain: requestDomain },
-    defaultSender = { tab: { id: 1 } }
-
+    defaultSender = { tab: { id: 1 } };
 
 describe('Generator', () => {
     before(() => {

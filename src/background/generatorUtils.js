@@ -27,15 +27,15 @@ class GeneratorUtils {
         document.body.appendChild(element);
         element.click();
 
-        window.chrome.tabs.query({ url: downloadsPage + '/*' },
+        window.chrome.tabs.query({url: downloadsPage + '/*'},
             function (result) {
                 if (result && result.length) {
                     window.chrome.tabs.reload(result[0].id, null, function () {
-                        window.chrome.tabs.update(result[0].id, { active: true });
+                        window.chrome.tabs.update(result[0].id, {active: true});
                     });
                 } else {
                     window.chrome.tabs.create(
-                        { url: downloadsPage, active: true });
+                        {url: downloadsPage, active: true});
                 }
             });
     }
@@ -95,11 +95,12 @@ class GeneratorUtils {
      * @example  let contentTypeValue = getHeaderValue(headerArray, "content-type");
      */
     static getHeaderValue(headers, key) {
-        if (headers && headers.length) {
-            for (let i = 0; i < headers.length; ++i) {
-                if (headers[i].name.toLowerCase() === key) {
-                    return headers[i].value;
-                }
+        if (!headers || !headers.length) {
+            return '';
+        }
+        for (let i = 0; i < headers.length; ++i) {
+            if (headers[i].name.toLowerCase() === key) {
+                return headers[i].value;
             }
         }
         return '';

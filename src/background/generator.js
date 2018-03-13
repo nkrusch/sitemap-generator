@@ -171,12 +171,9 @@ class Generator {
         initialCrawlCompleted = true;
     }
 
-    // /////////////////////
-
     /**
-     * @ignore
      * @description execute everytime when processing is done,
-     * independed of why processing ended
+     * independent of why processing ended
      */
     onComplete() {
 
@@ -212,7 +209,6 @@ class Generator {
     }
 
     /**
-     * @ignore
      * @description take first queued url and create new tab for that url
      */
     navigateToNext() {
@@ -265,7 +261,6 @@ class Generator {
     }
 
     /**
-     * @ignore
      * @description when urls are discovered through some means, this function determines
      * how they should be handled
      * @param {Array<String>} urls - the urls to process
@@ -325,10 +320,18 @@ class Generator {
         });
     }
 
+    /**
+     * @description handler when http request returns successful status code
+     * @param {String} url - the url that succeeded
+     */
     static onUrlSuccess(url) {
         GeneratorUtils.listAdd(url, lists.successUrls);
     }
 
+    /**
+     * @description handler when http request returns error status code
+     * @param {String} url - the url that succeeded
+     */
     static onUrlError(url) {
         GeneratorUtils.listAdd(url, lists.errorHeaders);
     }
