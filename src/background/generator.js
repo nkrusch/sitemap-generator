@@ -3,6 +3,7 @@ import GeneratorUtils from './generatorUtils';
 
 let url,
     requestDomain,
+    initialCrawlCompleted,
     onCompleteCallback,
     contenttypePatterns,
     excludeExtension,
@@ -107,7 +108,7 @@ class Generator {
     start() {
         const launchPage = window.chrome.extension.getURL('process.html');
 
-        CenteredPopup.open(800, 800, launchPage, 'normal', true)
+        CenteredPopup.open(800, 800, launchPage, 'normal')
             .then((window) => {
                 targetRenderer = window.id;
                 // 1. add the first url to processing queue
@@ -155,8 +156,10 @@ class Generator {
      */
     urlMessage(urls, sender) {
         this.processDiscoveredUrls(urls);
-        return !sender || !sender.tab ||
+        if (sender && sender.tab) {
             window.chrome.tabs.remove(sender.tab.id);
+        }
+        initialCrawlCompleted = true;
     }
 
     // /////////////////////
@@ -218,12 +221,12 @@ class Generator {
         }, function (tabs) {
 
             let openTabsCount = (tabs || []).length;
-            // console.log(openTabsCount, lists.processQueue.length);
 
             if (openTabsCount === 0 &&
-                lists.processQueue.length === 0 &&
-                lists.completedUrls.length >= 1) {
-                oncComplete();
+                lists.processQueue.length === 0) {
+                if (initialCrawlCompleted) {
+                    oncComplete();
+                }
                 return;
             }
 

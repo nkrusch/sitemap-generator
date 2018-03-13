@@ -21,12 +21,12 @@ class Crawler {
 
         // remove this url from sitemap if noindex is set
         if (robots.indexOf('noindex') >= 0) {
-            window.chrome.runtime.sendMessage({noindex: window.location.href});
+            window.chrome.runtime.sendMessage({ noindex: window.location.href });
         }
 
         // don't follow links on this page if no follow is set
         if (robots.indexOf('nofollow') >= 0) {
-            return window.chrome.runtime.sendMessage({urls: []});
+            return window.chrome.runtime.sendMessage({ urls: [] });
         }
 
         // wait for onload
@@ -34,6 +34,13 @@ class Crawler {
 
         // but ensure the function will ultimately run
         setTimeout(Crawler.findLinks, 500);
+    }
+
+    /**
+     * @ignore
+     */
+    static set baseUrl(value) {
+        baseUrl = encodeURI(value);
     }
 
     /**
@@ -67,15 +74,10 @@ class Crawler {
 
     /**
      * @description request the app path that is being crawled
-     * so we can narrow down the matches in the front end
+     * so we can narrow down the matches when checking links on current page
      */
-    static getBaseUrl(callback) {
-        window.chrome.runtime.sendMessage({crawlUrl: true}, function (url) {
-            baseUrl = encodeURI(url);
-            if (callback) {
-                callback();
-            }
-        });
+    static getBaseUrl() {
+        window.chrome.runtime.sendMessage({ crawlUrl: true }, Crawler.baseUrl);
     }
 
     /**
@@ -96,7 +98,7 @@ class Crawler {
                 }
             });
 
-            window.chrome.runtime.sendMessage({urls: message});
+            window.chrome.runtime.sendMessage({ urls: message });
         }
     }
 
@@ -114,7 +116,6 @@ class Crawler {
             link.href = href;
             href = (link.protocol + '//' + link.host + link.pathname + link.search + link.hash);
         }
-        console.log(href);
         return encodeURI(href);
     }
 }

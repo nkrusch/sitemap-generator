@@ -1,13 +1,11 @@
 let paths = require('./config/gulp.config.json');
-let semver = require('semver');
 let gulp = require('gulp');
 let del = require('del');
 let fs = require('fs');
 let webpack = require('webpack-stream');
 let $ = require('gulp-load-plugins')();
 let argv = require('yargs').argv;
-let isProd = (argv.env === 'build');
-let isBump = isProd && (argv.patch || argv.major || argv.minor);
+let isProd = (argv.env === 'build'); 
 
 gulp.task('default', [
     'clean',
@@ -20,11 +18,10 @@ gulp.task('default', [
     'watch'
 ]);
 
-gulp.task('release', function () {
-    let version = JSON.parse(fs.readFileSync(paths.package, 'utf8')).version;
+gulp.task('release', ['default'], function () {
     return gulp.src(paths.dist + '/**/*')
-        .pipe($.zip(version + '.zip'))
-        .pipe(gulp.dest(paths.releases + '/'));
+        .pipe($.zip('release.zip'))
+        .pipe(gulp.dest(paths.releases));
 });
 
 gulp.task('watch', function () {
@@ -42,36 +39,22 @@ gulp.task('clean', function () {
 });
 
 gulp.task('copy-manifest', function () {
-    if (isBump) {
-        let step = argv.patch ? 'patch' : (argv.major ? 'major' : 'minor');
-        let manifest = JSON.parse(fs.readFileSync(paths.manifest, 'utf8'));
-        let version_name = semver.inc(manifest.version, step)
-        let tmp = paths.manifest.split("/"); tmp.pop();
-        let manifest_dir = tmp.join("/") + "/"
+    let pkg = JSON.parse(fs.readFileSync(paths.package, 'utf8'));
+    let version_name = pkg.version
+    let tmp = paths.manifest.split("/");
+    tmp.pop();
+    let manifest_dir = tmp.join("/") + "/";
 
-        setTimeout(function () {
-            gulp.src(paths.package)
-                .pipe($.jsonModify({
-                    key: 'version',
-                    value: version_name
-                }))
-                .pipe(gulp.dest('./'));
-        }, 10);
-
-        return gulp.src(paths.manifest)
-            .pipe($.jsonModify({
-                key: 'version',
-                value: version_name
-            }))
-            .pipe($.jsonModify({
-                key: 'version_name',
-                value: version_name
-            }))
-            .pipe(gulp.dest(manifest_dir))
-            .pipe($.jsonminify())
-            .pipe(gulp.dest(paths.dist));
-
-    } else return gulp.src(paths.manifest)
+    return gulp.src(paths.manifest)
+        .pipe($.jsonModify({
+            key: 'version',
+            value: version_name
+        }))
+        .pipe($.jsonModify({
+            key: 'version_name',
+            value: version_name
+        }))
+        .pipe(gulp.dest(manifest_dir))
         .pipe($.jsonminify())
         .pipe(gulp.dest(paths.dist));
 });

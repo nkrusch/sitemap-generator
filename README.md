@@ -10,7 +10,9 @@ Generate sitemaps using Chrome browser. Especially intended for generating sitem
 [<img src="https://david-dm.org/pikkumyy/sitemap-generator/dev-status.svg">](https://david-dm.org/pikkumyy/sitemap-generator?type=dev)
 [<img src="https://img.shields.io/chrome-web-store/v/hcnjemngcihnhncobgdgkkfkhmleapah.svg">](https://chrome.google.com/webstore/detail/hcnjemngcihnhncobgdgkkfkhmleapah)
 [<img src="https://img.shields.io/github/commits-since/pikkumyy/sitemap-generator/latest.svg">](https://github.com/pikkumyy/sitemap-generator)
- 
+<img src="https://img.shields.io/chrome-web-store/users/hcnjemngcihnhncobgdgkkfkhmleapah.svg">
+<img src="https://img.shields.io/chrome-web-store/stars/hcnjemngcihnhncobgdgkkfkhmleapah.svg">	
+
 ## Installation
 
 The latest version is available for installation at Chrome Web Store.

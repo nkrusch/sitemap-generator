@@ -2,14 +2,12 @@ import chrome from 'sinon-chrome';
 import chai from 'chai';
 import BackgroundEvents from '../src/background/events';
 import BackgroundApi from '../src/background/backgroundApi';
-import Generator from '../src/background/generator';
 import backgroundApi from '../src/background/backgroundApi';
 
-chai.expect();
 require('jsdom-global')();
 const expect = chai.expect;
 
-let generator, url = "https://www.test.com/",
+let url = "https://www.test.com/",
     requestDomain = url + "/*",
     testPages = {
         a: "https://www.test.com/index.html",
@@ -48,69 +46,50 @@ describe('Event pages', () => {
             window.chrome = chrome;
             window.alert = () => { };
         });
-        it('constructor should register chrome listeners', () => {
+        beforeEach(() => {
+            chrome.flush();
+        });
+        it('constructor should register onmessage listener', () => {
             expect(window.chrome.runtime.onMessage.addListener.notCalled).to.be.true;
-            expect(window.chrome.browserAction.onClicked.addListener.notCalled).to.be.true;
             new BackgroundApi();
             expect(window.chrome.runtime.onMessage.addListener.notCalled).to.not.be.true;
+        });
+        it('constructor should register browseraction listener', () => {
+            expect(window.chrome.browserAction.onClicked.addListener.notCalled).to.be.true;
+            new BackgroundApi();
             expect(window.chrome.browserAction.onClicked.addListener.notCalled).to.not.be.true;
+        });
+        it('resolveSetupPageUrl should include active tab url if it starts with http', () => {
+            let result = BackgroundApi.resolveSetupPageUrl(testPages.a);
+            expect(result).to.contain(testPages.a);
+        });
+        it('resolveSetupPageUrl should not include active tab url if it does not start with http', () => {
+            let result = BackgroundApi.resolveSetupPageUrl("chrome://about");
+            expect(result).to.not.contain("chrome://about");
         });
         it('openSetupPage launches only if generator does not exist', () => {
             backgroundApi.onStartGenerator(defaultConfig);
             expect(BackgroundApi.openSetupPage({ url: testPages.a })).to.be.false;
             backgroundApi.onCrawlComplete();
-            expect(BackgroundApi.openSetupPage({ url: testPages.a })).to.not.be.false;
-        });
-        it('launchRequest executes without error', () => {
+            expect(BackgroundApi.openSetupPage({ url: '' })).to.not.be.false;
+        }); 
+        it('launchRequest starts generator without error', () => {
             expect(BackgroundApi.launchRequest({ start: defaultConfig }, defaultSender)).to.be.true;
         });
-        it('generator does not try to start when config not provided', () => {
+        it('launchRequest does not try to start when config not provided', () => {
             expect(BackgroundApi.launchRequest({ incorrect: defaultConfig }, defaultSender)).to.be.false;
         });
-        it('generator does not try to start when permission not granted', () => {
-            expect(BackgroundApi.handleGrantResponse(false)).to.be.false;
+        it('handleGrantResponse does starts when permission granted', () => {
+            backgroundApi.onCrawlComplete(); // kill any existing intanse
+            expect(BackgroundApi.handleGrantResponse(true, defaultConfig, defaultSender)).to.be.true;
         });
+        it('handleGrantResponse does NOT start when permission not granted', () => {
+            expect(BackgroundApi.handleGrantResponse(false, defaultConfig)).to.be.false;
+        });        
         it('generator does not try to start when already exists', () => {
             backgroundApi.onStartGenerator(defaultConfig);
             expect(backgroundApi.onStartGenerator(defaultConfig)).to.be.false;
         });
-        it('generator does not try to start when does not exist, permission granted, and config provided', () => {
-            backgroundApi.onCrawlComplete(); // kill any existing intanse
-            expect(BackgroundApi.handleGrantResponse(true, defaultConfig)).to.not.be.false;
-        });
     });
 
-    describe('Generator', () => {
-        beforeEach(() => {
-            window.chrome.flush();
-            generator = new Generator(defaultConfig);
-            generator.start();
-        }); 
-        it('should start and stop without error', () => {
-            expect(() => { generator.start() }).to.not.throw();
-            expect(() => { generator.onComplete() }).to.not.throw();
-        });
-        it('should report status without error', () => {
-            expect(() => { generator.status() }).to.not.throw();
-        });
-        it('should handle noindex without error', () => {
-            expect(() => { generator.noindex(url) }).to.not.throw();
-        });
-        it('should receive urls without error', () => {
-            expect(() => { generator.urlMessage([testPages.a, testPages.d], defaultSender) }).to.not.throw();
-        });
-        it('api should return false if no method matches', () => {
-            expect(generator.generatorApi({ badRequest: true })).to.be.false;
-        });
-        it('api crawlurl should return base url', (done) => {
-            generator.generatorApi({ crawlUrl: true }, defaultSender, (resp)=>{
-                expect(resp).to.equal(defaultConfig.url);
-                done();
-            })
-        });
-        afterEach(() => {
-            backgroundApi.onCrawlComplete();
-            generator.onComplete();
-        });
-    });
 });
