@@ -1,7 +1,8 @@
 import CenteredPopup from './centeredPopup.js';
 import Generator from './generator.js';
 
-let setupWindow, generator;
+let generator;
+let setupPageURI;
 
 /**
  * @class
@@ -9,8 +10,23 @@ let setupWindow, generator;
 class BackgroundApi {
 
     constructor() {
+        setupPageURI = window.chrome.extension.getURL('setup.html');
         window.chrome.runtime.onMessage.addListener(BackgroundApi.launchRequest);
         window.chrome.browserAction.onClicked.addListener(BackgroundApi.openSetupPage);
+    }
+
+    /**
+     * @description Determine what url to launch when setup page should launch
+     */
+    static resolveSetupPageUrl(url) {
+
+        let appPath = '';
+
+        if (url && url.indexOf('http') === 0) {
+            appPath = url;
+        }
+
+        return setupPageURI + '?u=' + appPath;
     }
 
     /**
@@ -24,13 +40,10 @@ class BackgroundApi {
             return false;
         }
 
-        let appPath = tab.url.indexOf('http') === 0 ? tab.url : '',
-            setupPage = window.chrome.extension.getURL('setup.html');
+        let windowUrl = BackgroundApi.resolveSetupPageUrl(tab.url);
 
-        return CenteredPopup.open(600, 600, setupPage + '?u=' + appPath, 'popup')
-            .then((window) => {
-                setupWindow = window.id;
-            });
+        return CenteredPopup.open(600, 600, windowUrl, 'popup')
+            .then(BackgroundApi.setupWindowId);
     }
 
     /**
@@ -43,17 +56,19 @@ class BackgroundApi {
      * @param {Object} sender -
      * @see {@link https://developer.chrome.com/extensions/runtime#type-MessageSender|MessageSender}
      */
-    static launchRequest(request) {
-        if (generator || !request.start) {
+    static launchRequest(request, sender) {
+        if (!request.start) {
             return false;
         }
 
-        let config = request.start;
+        let config = request.start,
+            callback = (granted) => BackgroundApi
+                .handleGrantResponse(granted, config, sender);
 
         window.chrome.permissions.request({
             permissions: ['tabs'],
             origins: [config.requestDomain]
-        }, (granted) => BackgroundApi.handleGrantResponse(granted, config));
+        }, callback);
         return true;
     }
 
@@ -63,26 +78,16 @@ class BackgroundApi {
      * @param {boolean} granted - true if permission granted
      * @param {Object} config - runtime settings
      */
-    static handleGrantResponse(granted, config) {
-        BackgroundApi.closeSetupWindow();
+    static handleGrantResponse(granted, config, sender) {
+        if (sender && sender.tab) {
+            window.chrome.tabs.remove(sender.tab.id);
+        }
         if (granted) {
-            return BackgroundApi.onStartGenerator(config);
+            BackgroundApi.onStartGenerator(config);
+        } else {
+            window.alert(window.chrome.i18n.getMessage('permissionNotGranted'));
         }
-        window.alert(window.chrome.i18n.getMessage('permissionNotGranted'));
-        return false;
-    }
-
-    /**
-     * @ignore
-     * @description Try close the setup window
-     */
-    static closeSetupWindow() {
-        if (setupWindow) {
-            window.chrome.windows.remove(setupWindow, () => {
-                if (window.chrome.runtime.lastError) ;
-                setupWindow = null;
-            });
-        }
+        return granted;
     }
 
     /**
@@ -99,13 +104,13 @@ class BackgroundApi {
      * @param {Object} config - generator configuration
      */
     static onStartGenerator(config) {
-        if (!generator) {
-            config.callback = BackgroundApi.onCrawlComplete;
-            generator = new Generator(config);
-            generator.start();
-            return generator;
+        if (generator) {
+            return false;
         }
-        return false;
+        config.callback = BackgroundApi.onCrawlComplete;
+        generator = new Generator(config);
+        generator.start();
+        return generator;
     }
 }
 
