@@ -33,12 +33,12 @@ class WebRequestListeners {
         requestDomain = domain;
         successStatusCodes = statusCodes;
         validContentTypes = contentTypes;
-        onMessageCallback = callbacks.onMessage.bind(this);
-        onNextCallback = callbacks.onNext.bind(this);
-        onUrlsCallback = callbacks.onUrls.bind(this);
-        onErrorCallback = callbacks.onError.bind(this);
-        onSuccessCallback = callbacks.onSuccess.bind(this);
-        onTerminate = callbacks.onTerminate.bind(this);
+        onMessageCallback = callbacks.onMessage;
+        onNextCallback = callbacks.onNext;
+        onUrlsCallback = callbacks.onUrls;
+        onErrorCallback = callbacks.onError;
+        onSuccessCallback = callbacks.onSuccess;
+        onTerminate = callbacks.onTerminate;
         this.listeners(true);
     }
 
@@ -54,20 +54,24 @@ class WebRequestListeners {
      * @param {boolean} add - true to add, false to remove
      */
     listeners(add) {
+
         let action = add ? 'addListener' : 'removeListener';
 
+        let modifyListener = (event, callback, filters) => {
+            window.chrome.webRequest[event][action](callback,
+                { urls: [requestDomain], types: ['main_frame'] }, filters);
+        };
+
         window.chrome.runtime.onMessage[action](onMessageCallback);
+        modifyListener('onHeadersReceived',
+            WebRequestListeners.onHeadersReceivedHandler, ['blocking', 'responseHeaders']);
+        modifyListener('onBeforeRedirect',
+            WebRequestListeners.onBeforeRedirect, ['responseHeaders']);
+        modifyListener('onCompleted',
+            WebRequestListeners.onTabLoadListener, ['responseHeaders']);
 
-        window.chrome.webRequest.onHeadersReceived[action](this.onHeadersReceivedHandler,
-            { urls: [requestDomain], types: ['main_frame'] }, ['blocking', 'responseHeaders']);
-
-        window.chrome.webRequest.onBeforeRedirect[action](this.onBeforeRedirect,
-            { urls: [requestDomain], types: ['main_frame'] }, ['responseHeaders']);
-
-        window.chrome.webRequest.onCompleted[action](this.onTabLoadListener,
-            { urls: [requestDomain], types: ['main_frame'] }, ['responseHeaders']);
-
-        window.chrome.webRequest.onErrorOccurred[action](this.onTabErrorHandler,
+        window.chrome.webRequest.onErrorOccurred[action](
+            WebRequestListeners.onTabErrorHandler,
             { urls: [requestDomain], types: ['main_frame'] });
     }
     /**
@@ -78,7 +82,7 @@ class WebRequestListeners {
      * @param {Object} details - provided by Chrome
      * @see {@link https://developer.chrome.com/extensions/webRequest#event-onHeadersReceived | onHeadersReceived}
      */
-    onHeadersReceivedHandler(details) {
+    static onHeadersReceivedHandler(details) {
 
         let contentType = GeneratorUtils.getHeaderValue(
             details.responseHeaders, 'content-type');
@@ -103,26 +107,21 @@ class WebRequestListeners {
      * @param {Object} details - provided by chrome
      * @see {@link https://developer.chrome.com/extensions/webRequest#event-onCompleted | OnComplete}
      */
-    onTabLoadListener(details) {
-
-        let status = GeneratorUtils
-            .getHeaderValue(details.responseHeaders, 'status');
-
-        if (successStatusCodes.indexOf(parseInt(status, 0)) < 0) {
+    static onTabLoadListener(details) {
+        if (successStatusCodes.indexOf(details.statusCode) < 0) {
             onErrorCallback(details.url);
-            this.onTabErrorHandler(details);
-            return;
+            WebRequestListeners.onTabErrorHandler(details);
+        } else {
+            onSuccessCallback(details.url);
+            GeneratorUtils.loadContentScript(details.tabId, onTerminate);
         }
-
-        onSuccessCallback(details.url);
-        GeneratorUtils.loadContentScript(details.tabId, onTerminate);
     }
     /**
      * @ignore
      * @description whenever request causes redirect, put the
      * new url in queue and terminate current request
      */
-    onBeforeRedirect(details) {
+    static onBeforeRedirect(details) {
         onUrlsCallback([details.redirectUrl]);
         window.chrome.tabs.remove(details.tabId);
         return { cancel: true };
@@ -131,7 +130,7 @@ class WebRequestListeners {
      * @ignore
      * @description if tab errors, close it and load next one
      */
-    onTabErrorHandler(details) {
+    static onTabErrorHandler(details) {
         window.chrome.tabs.remove(details.tabId, onNextCallback);
     }
 }
