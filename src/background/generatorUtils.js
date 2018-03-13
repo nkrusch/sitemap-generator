@@ -88,6 +88,23 @@ class GeneratorUtils {
         });
     }
 
+    /**
+     * @description Read headers array looking for specified key
+     * @param {Array<Object>} headers - http headers
+     * @param {String} key - header name
+     * @example  let contentTypeValue = getHeaderValue(headerArray, "content-type");
+     */
+    static getHeaderValue(headers, key) {
+        if (headers && headers.length) {
+            for (let i = 0; i < headers.length; ++i) {
+                if (headers[i].name.toLowerCase() === key) {
+                    return headers[i].value;
+                }
+            }
+        }
+        return '';
+    }
+
 }
 
 export default GeneratorUtils;
