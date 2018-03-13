@@ -104,7 +104,6 @@ class GeneratorUtils {
         }
         return '';
     }
-
 }
 
 export default GeneratorUtils;

@@ -89,11 +89,11 @@ class Generator {
         if (request.terminate) {
             this.onComplete();
         } else if (request.noindex) {
-            this.noindex(request.noindex);
+            Generator.noindex(request.noindex);
         } else if (request.urls) {
             this.urlMessage(request.urls, sender);
         } else if (request.status) {
-            return sendResponse(this.status());
+            return sendResponse(Generator.status());
         } else if (request.crawlUrl) {
             return sendResponse(url);
         }
@@ -121,8 +121,8 @@ class Generator {
                         onNext: this.navigateToNext,
                         onUrls: this.processDiscoveredUrls,
                         onTerminate: this.onComplete,
-                        onError: this.onUrlError,
-                        onSuccess: this.onUrlSuccess
+                        onError: Generator.onUrlError,
+                        onSuccess: Generator.onUrlSuccess
                     });
                 // 3. navigate to first url
                 this.navigateToNext();
@@ -134,7 +134,7 @@ class Generator {
     /**
      * @description Get stats about ongoing processing status
      */
-    status() {
+    static status() {
         return {
             url: url,
             queue: lists.processQueue.length,
@@ -148,7 +148,7 @@ class Generator {
      * @description Exclude discovered url from sitemap
      * @param {String} url - the url that should not be included in the sitemap
      */
-    noindex(url) {
+    static noindex(url) {
         url = encodeURI(url);
         GeneratorUtils.listAdd(url, lists.completedUrls);
 
@@ -279,15 +279,19 @@ class Generator {
             // if there is successful entry for hashbang path
             // automatically record save result for the hashbang path
             if (u.indexOf('#!') > 0) {
-                let page = u.substr(0, u.indexOf('#!'));
+                let page = u.substr(0, u.indexOf('#!')),
+                    success = lists.successUrls.indexOf(page) > -1,
+                    error = lists.errorHeaders.indexOf(page) > -1;
 
-                if (lists.successUrls.indexOf(page) > -1) {
+                if (success || error) {
                     GeneratorUtils.listAdd(u, lists.completedUrls);
-                    GeneratorUtils.listAdd(u, lists.successUrls);
-                }
-                if (lists.errorHeaders.indexOf(page) > -1) {
-                    GeneratorUtils.listAdd(u, lists.completedUrls);
-                    GeneratorUtils.listAdd(u, lists.errorHeaders);
+
+                    if (success) {
+                        GeneratorUtils.listAdd(u, lists.successUrls);
+                    }
+                    if (error) {
+                        GeneratorUtils.listAdd(u, lists.errorHeaders);
+                    }
                 }
             } else if (u.indexOf('#') > 0) {
                 u = u.substr(0, u.indexOf('#'));
@@ -322,11 +326,11 @@ class Generator {
         });
     }
 
-    onUrlSuccess(url) {
+    static onUrlSuccess(url) {
         GeneratorUtils.listAdd(url, lists.successUrls);
     }
 
-    onUrlError(url) {
+    static onUrlError(url) {
         GeneratorUtils.listAdd(url, lists.errorHeaders);
     }
 }
