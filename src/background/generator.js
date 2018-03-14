@@ -76,6 +76,11 @@ class Generator {
      */
     start() {
         const launchPage = window.chrome.extension.getURL('process.html');
+        let onError = (u) => {
+            lists.error.add(u);
+        }, onSuccess = (u) => {
+            lists.success.add(u);
+        };
 
         initialCrawlCompleted = false;
         CenteredPopup.open(800, 800, launchPage, 'normal')
@@ -93,12 +98,8 @@ class Generator {
                         onNext: this.navigateToNext,
                         onUrls: this.processDiscoveredUrls,
                         onTerminate: this.onComplete,
-                        onError: (u) => {
-                            lists.error.add(u);
-                        },
-                        onSuccess: (u) => {
-                            lists.success.add(u);
-                        }
+                        onError: onError,
+                        onSuccess: onSuccess
                     });
                 // 3. navigate to first url
                 this.navigateToNext();

@@ -20,16 +20,29 @@ class SimpleQueue {
         return this.queue.shift();
     }
 
+    /**
+     * @description Check if queue contains some item
+     * @param {String} url
+     * @returns {boolean}
+     */
     contains(url) {
         return this.queue.indexOf(url) >= 0;
     }
 
+    /**
+     * @description Add item to queue
+     * @param {String} url
+     */
     add(url) {
         if (this.queue.indexOf(url) < 0) {
             this.queue.push(url);
         }
     };
 
+    /**
+     * @description Remove item from queue
+     * @param {String} url
+     */
     remove(url) {
         let index = this.queue.indexOf(url);
 
