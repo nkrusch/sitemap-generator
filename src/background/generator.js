@@ -225,28 +225,35 @@ class Generator {
      * @description take first queued url and create new tab for that url
      */
     navigateToNext() {
-        if (!terminating) {
-            let _then = (tabs) => Generator
-                .nextAction(tabs, () => this.onComplete);
-
-            GeneratorUtils.getExistingTabs(targetRenderer,
-                requestDomain, _then);
+        if (terminating) {
+            return;
         }
+
+        GeneratorUtils.getExistingTabs(
+            targetRenderer, requestDomain, (tabs) => {
+
+                let openTabs = !!(tabs || []).length,
+                    emptyQueue = !lists.processQueue.length,
+                    onTerminate = this.onComplete();
+
+                Generator.nextAction(openTabs, emptyQueue, onTerminate);
+            });
     }
 
     /**
      * @description Determine if it is time to launch new tab, terminate, or wait
-     * @param {Array<Object>} tabs - list of currently open tabs
-     * @param {function} done - callback if tab launch fails
+     * @param {boolean} openTabs - number of open tabs
+     * @param {boolean} emptyQueue - true if no pending urls
+     * @param {function} done - callback if tab fails to open
      */
-    static nextAction(tabs, done) {
-        let openTabs = (tabs || []).length,
-            emptyQueue = !lists.processQueue.length;
+    static nextAction(openTabs, emptyQueue, done) {
 
         if (!openTabs && emptyQueue && initialCrawlCompleted) {
             done();
+            return;
         }
-        if (openTabs > maxTabCount || emptyQueue) {
+
+        if (openTabs > maxTabCount) {
             return;
         }
 
