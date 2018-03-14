@@ -89,10 +89,8 @@ class Generator {
                 // 1. add the first url to processing queue
                 lists.pending.add(url);
                 // 2. register webRequest listener where we listen to successful http request events;
-                requestListener = new WebRequestListener(
-                    requestDomain,
-                    successCodes,
-                    contenttypePatterns,
+                requestListener = new WebRequestListener(requestDomain,
+                    successCodes, contenttypePatterns,
                     {
                         onMessage: this.generatorApi,
                         onNext: this.navigateToNext,
