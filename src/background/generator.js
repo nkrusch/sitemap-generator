@@ -1,6 +1,7 @@
 import CenteredPopup from './centeredPopup';
 import GeneratorUtils from './generatorUtils';
 import WebRequestListener from './webRequests';
+import QueueManager from './queueManager';
 
 let url,
     requestDomain,
@@ -62,12 +63,8 @@ class Generator {
         maxTabCount = Math.max(1, config.maxTabCount);
         terminating = false;
         progressInterval = null;
-        lists = {
-            processQueue: [],
-            completedUrls: [],
-            errorHeaders: [],
-            successUrls: []
-        };
+        lists = new QueueManager();
+
         this.generatorApi = this.generatorApi.bind(this);
         this.onComplete = this.onComplete.bind(this);
         this.navigateToNext = this.navigateToNext.bind(this);
@@ -80,11 +77,12 @@ class Generator {
     start() {
         const launchPage = window.chrome.extension.getURL('process.html');
 
+        initialCrawlCompleted = false;
         CenteredPopup.open(800, 800, launchPage, 'normal')
             .then((window) => {
                 targetRenderer = window.id;
                 // 1. add the first url to processing queue
-                GeneratorUtils.listAdd(url, lists.processQueue);
+                lists.pending.add(url);
                 // 2. register webRequest listener where we listen to successful http request events;
                 requestListener = new WebRequestListener(
                     requestDomain,
@@ -95,8 +93,12 @@ class Generator {
                         onNext: this.navigateToNext,
                         onUrls: this.processDiscoveredUrls,
                         onTerminate: this.onComplete,
-                        onError: Generator.onUrlError,
-                        onSuccess: Generator.onUrlSuccess
+                        onError: (u) => {
+                            lists.error.add(u);
+                        },
+                        onSuccess: (u) => {
+                            lists.success.add(u);
+                        }
                     });
                 // 3. navigate to first url
                 this.navigateToNext();
@@ -132,57 +134,6 @@ class Generator {
     }
 
     /**
-     * @description Get stats about ongoing processing status
-     */
-    static status() {
-        return {
-            url: url,
-            queue: lists.processQueue.length,
-            completed: lists.completedUrls.length,
-            success: lists.successUrls.length,
-            error: lists.errorHeaders.length
-        };
-    }
-
-    /**
-     * @description Exclude discovered url from sitemap
-     * @param {String} url - the url that should not be included in the sitemap
-     */
-    static excludeFromIndex(url) {
-        url = encodeURI(url);
-        GeneratorUtils.listAdd(url, lists.completedUrls);
-
-        let successIndex = lists.successUrls.indexOf(url);
-
-        if (successIndex >= 0) {
-            lists.successUrls.splice(successIndex);
-        }
-    }
-
-    /**
-     * @description handler when http request returns successful status code
-     * @param {String} url - the url that succeeded
-     */
-    static onUrlSuccess(url) {
-        GeneratorUtils.listAdd(url, lists.successUrls);
-    }
-
-    /**
-     * @description handler when http request returns error status code
-     * @param {String} url - the url that succeeded
-     */
-    static onUrlError(url) {
-        GeneratorUtils.listAdd(url, lists.errorHeaders);
-    }
-
-    /**
-     * @description When process completes, generate the sitemap file
-     */
-    static makeSitemap() {
-        return GeneratorUtils.makeSitemap(url, lists.successUrls);
-    }
-
-    /**
      * @description When url message is received, process urls,
      * then close tab that sent the message
      */
@@ -192,77 +143,6 @@ class Generator {
             window.chrome.tabs.remove(sender.tab.id);
         }
         initialCrawlCompleted = true;
-    }
-
-    /**
-     * @description this method will kill any ongoing
-     * generator and/or wrap up when processing is done
-     */
-    onComplete() {
-        if (terminating) {
-            return;
-        }
-        terminating = true;
-        clearInterval(progressInterval);
-
-        (function closeRenderer() {
-            GeneratorUtils.getExistingTabs(targetRenderer, requestDomain,
-                (result) => {
-                    if (result.length) {
-                        GeneratorUtils.closeTabs(result);
-                        setTimeout(closeRenderer, 250);
-                    } else {
-                        requestListener.destroy();
-                        onCompleteCallback();
-                        window.chrome.windows.remove(
-                            targetRenderer, Generator.makeSitemap);
-                    }
-                });
-        }());
-    }
-
-    /**
-     * @description take first queued url and create new tab for that url
-     */
-    navigateToNext() {
-        if (terminating) {
-            return;
-        }
-
-        GeneratorUtils.getExistingTabs(
-            targetRenderer, requestDomain, (tabs) => {
-
-                let openTabs = !!(tabs || []).length,
-                    emptyQueue = !lists.processQueue.length,
-                    onTerminate = this.onComplete();
-
-                Generator.nextAction(openTabs, emptyQueue, onTerminate);
-            });
-    }
-
-    /**
-     * @description Determine if it is time to launch new tab, terminate, or wait
-     * @param {boolean} openTabs - number of open tabs
-     * @param {boolean} emptyQueue - true if no pending urls
-     * @param {function} done - callback if tab fails to open
-     */
-    static nextAction(openTabs, emptyQueue, done) {
-
-        if (!openTabs && emptyQueue && initialCrawlCompleted) {
-            done();
-            return;
-        }
-
-        if (openTabs > maxTabCount) {
-            return;
-        }
-
-        let nextUrl = lists.processQueue.shift();
-
-        if (lists.completedUrls.indexOf(nextUrl) < 0) {
-            GeneratorUtils.listAdd(nextUrl, lists.completedUrls);
-            GeneratorUtils.launchTab(targetRenderer, nextUrl, done);
-        }
     }
 
     /**
@@ -285,15 +165,102 @@ class Generator {
             // filter down to new urls in target domain
             // + exclude everything that is clearly not html/text
             return u.indexOf(url) === 0 &&
-                (lists.completedUrls.indexOf(u) < 0) &&
-                (lists.processQueue.indexOf(u) < 0) &&
+                !lists.complete.contains(u) &&
+                !lists.pending.contains(u) &&
                 !badFileExtension;
 
-        }).map(function (u) {
-
-            // if url makes it this far add it to queue
-            GeneratorUtils.listAdd(u, lists.processQueue);
+        }).map((u) => {
+            lists.pending.add(u);
         });
+    }
+
+    /**
+     * @description this method will kill any ongoing
+     * generator and/or wrap up when processing is done
+     */
+    onComplete() {
+        if (terminating) {
+            return;
+        }
+        terminating = true;
+        clearInterval(progressInterval);
+        let sitemap = () => GeneratorUtils
+            .makeSitemap(url, lists.success.items);
+
+        (function closeRenderer() {
+            GeneratorUtils.getExistingTabs(targetRenderer, requestDomain,
+                (result) => {
+                    if (result.length) {
+                        GeneratorUtils.closeTabs(result);
+                        setTimeout(closeRenderer, 250);
+                    } else {
+                        requestListener.destroy();
+                        onCompleteCallback();
+                        window.chrome.windows.remove(
+                            targetRenderer, sitemap);
+                    }
+                });
+        }());
+    }
+
+    /**
+     * @description take first queued url and create new tab for that url
+     */
+    navigateToNext() {
+        if (terminating) {
+            return;
+        }
+
+        GeneratorUtils.getExistingTabs(
+            targetRenderer, requestDomain, (tabs) => {
+                Generator.nextAction(!!tabs.length,
+                    lists.pending.empty, this.onComplete);
+            });
+    }
+
+    /**
+     * @description Determine if it is time to launch new tab, terminate, or wait
+     * @param {boolean} openTabs - number of open tabs
+     * @param {boolean} emptyQueue - true if no pending urls
+     */
+    static nextAction(openTabs, emptyQueue, onComplete) {
+        if (!openTabs && emptyQueue && initialCrawlCompleted) {
+            onComplete();
+        }
+        if (emptyQueue || openTabs > maxTabCount) {
+            return;
+        }
+
+        let nextUrl = lists.pending.first;
+
+        if (!lists.complete.contains(nextUrl)) {
+            lists.complete.add(nextUrl);
+            GeneratorUtils.launchTab(targetRenderer, nextUrl,
+                onComplete);
+        }
+    }
+
+    /**
+     * @description Get stats about ongoing processing status
+     */
+    static status() {
+        return {
+            url: url,
+            queue: lists.pending.length,
+            completed: lists.complete.length,
+            success: lists.success.length,
+            error: lists.error.length
+        };
+    }
+
+    /**
+     * @description Exclude discovered url from sitemap
+     * @param {String} url - the url that should not be included in the sitemap
+     */
+    static excludeFromIndex(url) {
+        url = encodeURI(url);
+        lists.complete.add(url);
+        lists.success.remove(url);
     }
 }
 

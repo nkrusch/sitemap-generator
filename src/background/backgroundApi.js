@@ -52,8 +52,9 @@ class BackgroundApi {
      * At this point in time the extension will make sure the extension has been granted all necessary
      * permissions, then start the generator.
      * @see {@link https://developer.chrome.com/apps/runtime#event-onMessage|onMessage event}.
-     * @param request.start - configuration options
-     * @param {Object} sender -
+     * @param {Object} request - message content
+     * @param {Object} request.start - configuration options
+     * @param {Object} sender - chrome runtime provided sender information
      * @see {@link https://developer.chrome.com/extensions/runtime#type-MessageSender|MessageSender}
      */
     static launchRequest(request, sender) {

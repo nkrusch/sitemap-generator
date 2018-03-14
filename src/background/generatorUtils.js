@@ -6,13 +6,6 @@ const downloadsPage = 'chrome://downloads';
 class GeneratorUtils {
 
     /**
-     * @description move url to a specific processing queue
-     */
-    static listAdd(url, list) {
-        if (list.indexOf(url) < 0) list.push(url);
-    };
-
-    /**
      * @description Download file
      * @param {String} filename - output filename
      * @param {String} text - base64 file content
@@ -145,7 +138,9 @@ class GeneratorUtils {
         window.chrome.tabs.query({
             windowId: windowId,
             url: domain
-        }, callback);
+        }, (tabs) => {
+            callback(tabs || []);
+        });
     }
 
     /**
@@ -185,17 +180,22 @@ class GeneratorUtils {
         // if SHEBANG
         if (u.indexOf('#!') > 0) {
             let page = u.substr(0, u.indexOf('#!')),
-                success = lists.successUrls.indexOf(page) > -1,
-                error = lists.errorHeaders.indexOf(page) > -1;
+                success = lists.success.contains(page),
+                error = lists.error.contains(page);
+            // success = lists.successUrls.indexOf(page) > -1,
+            // error = lists.errorHeaders.indexOf(page) > -1;
 
             if (success || error) {
-                GeneratorUtils.listAdd(u, lists.completedUrls);
-                if (success) {
-                    GeneratorUtils.listAdd(u, lists.successUrls);
-                }
-                if (error) {
-                    GeneratorUtils.listAdd(u, lists.errorHeaders);
-                }
+                lists.complete.add(u);
+                // GeneratorUtils.listAdd(u, lists.completedUrls);
+            }
+            if (success) {
+                lists.success.add(u);
+                GeneratorUtils.listAdd(u, lists.successUrls);
+            }
+            if (error) {
+                lists.error.add(u);
+                // GeneratorUtils.listAdd(u, lists.errorHeaders);
             }
         } else if (u.indexOf('#') > 0) {
             // clear all other Hashes

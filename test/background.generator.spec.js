@@ -31,10 +31,10 @@ describe('Generator', () => {
         expect(() => { Generator.status() }).to.not.throw();
     });
     it('should handle noindex without error', () => {
-        expect(() => { Generator.noindex(url) }).to.not.throw();
+        expect(() => { Generator.excludeFromIndex(url) }).to.not.throw();
     });
     it('should receive urls without error', () => {
-        expect(() => { generator.urlMessage([testPages.a, testPages.d], defaultSender) }).to.not.throw();
+        expect(() => { generator.urlMessageReceived([testPages.a, testPages.d], defaultSender) }).to.not.throw();
     });
     it('api should return false if no method matches', () => {
         expect(generator.generatorApi({ badRequest: true })).to.be.false;
