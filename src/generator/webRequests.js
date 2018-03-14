@@ -48,8 +48,8 @@ class WebRequestListeners {
     destroy() {
         this.listeners(false);
     }
+
     /**
-     * @ignore
      * @description Add or remove runtime event handlers
      * @param {boolean} add - true to add, false to remove
      */
@@ -74,8 +74,8 @@ class WebRequestListeners {
             WebRequestListeners.onTabErrorHandler,
             { urls: [requestDomain], types: ['main_frame'] });
     }
+
     /**
-     * @ignore
      * @description listen to headers to determine type and cancel
      * and close tab immediately if the detected content type is not
      * on the list of target types
@@ -101,8 +101,8 @@ class WebRequestListeners {
 
         return { cancel: cancel };
     }
+
     /**
-     * @ignore
      * @description Listen to incoming webrequest headers
      * @param {Object} details - provided by chrome
      * @see {@link https://developer.chrome.com/extensions/webRequest#event-onCompleted | OnComplete}
@@ -116,8 +116,8 @@ class WebRequestListeners {
             GeneratorUtils.loadContentScript(details.tabId, onTerminate);
         }
     }
+
     /**
-     * @ignore
      * @description whenever request causes redirect, put the
      * new url in queue and terminate current request
      */
@@ -126,8 +126,8 @@ class WebRequestListeners {
         window.chrome.tabs.remove(details.tabId);
         return { cancel: true };
     }
+
     /**
-     * @ignore
      * @description if tab errors, close it and load next one
      */
     static onTabErrorHandler(details) {
