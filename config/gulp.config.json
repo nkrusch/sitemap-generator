@@ -1,7 +1,7 @@
 {
   "dist": "./dist",
   "source": "./src",
-  "releases": "./releases",
+  "releases": "./",
   "manifest": "./src/manifest.json",
   "package": "./package.json",
   "webpack": "./config/webpack.config.js",
