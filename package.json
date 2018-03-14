@@ -1,6 +1,6 @@
 {
   "name": "sitemap-generator",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "license": "MIT",
   "author": "Professor Chaos",
   "description": "Use chrome browser to generate sitemaps for your websites. This extension crawls website like a real user.",
