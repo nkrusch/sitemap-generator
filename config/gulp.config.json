@@ -18,7 +18,10 @@
     "en_US",
     "en_GB"
   ],
-  "background": "./src/background/**/*.js",
+  "background": [
+    "./src/background/**/*.js",
+    "./src/generator/**/*.js"
+  ],
   "content": "./src/crawler/**/*.js",
   "setup": "./src/ui/setup.js",
   "process": "./src/ui/process.js"

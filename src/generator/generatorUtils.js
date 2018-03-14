@@ -167,6 +167,30 @@ class GeneratorUtils {
     }
 
     /**
+     * @description Formatter for urls that contain shebang
+     */
+    static shebangHandler(u, lists) {
+        let page = u.substr(0, u.indexOf('#!')),
+            success = lists.success.contains(page),
+            error = lists.error.contains(page);
+        // success = lists.successUrls.indexOf(page) > -1,
+        // error = lists.errorHeaders.indexOf(page) > -1;
+
+        if (success || error) {
+            lists.complete.add(u);
+            // GeneratorUtils.listAdd(u, lists.completedUrls);
+        }
+        if (success) {
+            lists.success.add(u);
+            GeneratorUtils.listAdd(u, lists.successUrls);
+        }
+        if (error) {
+            lists.error.add(u);
+            // GeneratorUtils.listAdd(u, lists.errorHeaders);
+        }
+    }
+
+    /**
      * @description When urls are discovered, run them
      * through this url formatter
      * @param {String} u
@@ -179,24 +203,7 @@ class GeneratorUtils {
 
         // if SHEBANG
         if (u.indexOf('#!') > 0) {
-            let page = u.substr(0, u.indexOf('#!')),
-                success = lists.success.contains(page),
-                error = lists.error.contains(page);
-            // success = lists.successUrls.indexOf(page) > -1,
-            // error = lists.errorHeaders.indexOf(page) > -1;
-
-            if (success || error) {
-                lists.complete.add(u);
-                // GeneratorUtils.listAdd(u, lists.completedUrls);
-            }
-            if (success) {
-                lists.success.add(u);
-                GeneratorUtils.listAdd(u, lists.successUrls);
-            }
-            if (error) {
-                lists.error.add(u);
-                // GeneratorUtils.listAdd(u, lists.errorHeaders);
-            }
+            GeneratorUtils.shebangHandler(u, lists);
         } else if (u.indexOf('#') > 0) {
             // clear all other Hashes
             u = u.substr(0, u.indexOf('#'));

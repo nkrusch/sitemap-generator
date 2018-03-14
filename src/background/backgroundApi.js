@@ -1,5 +1,5 @@
 import CenteredPopup from './centeredPopup.js';
-import Generator from './generator.js';
+import Generator from '../generator/generator.js';
 
 let generator;
 let setupPageURI;
