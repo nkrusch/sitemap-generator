@@ -225,36 +225,37 @@ class Generator {
      * @description take first queued url and create new tab for that url
      */
     navigateToNext() {
+        if (!terminating) {
+            let _then = (tabs) => Generator
+                .nextAction(tabs, () => this.onComplete);
 
-        if (terminating) {
+            GeneratorUtils.getExistingTabs(targetRenderer,
+                requestDomain, _then);
+        }
+    }
+
+    /**
+     * @description Determine if it is time to launch new tab, terminate, or wait
+     * @param {Array<Object>} tabs - list of currently open tabs
+     * @param {function} done - callback if tab launch fails
+     */
+    static nextAction(tabs, done) {
+        let openTabs = (tabs || []).length,
+            emptyQueue = !lists.processQueue.length;
+
+        if (!openTabs && emptyQueue && initialCrawlCompleted) {
+            done();
+        }
+        if (openTabs > maxTabCount || emptyQueue) {
             return;
         }
-        let done = this.onComplete,
-            next = this.navigateToNext,
-            nextAction = (tabs) => {
-                let openTabs = (tabs || []).length,
-                    emptyQueue = !lists.processQueue.length,
-                    maxTabsAlreadyOpen = openTabs > maxTabCount,
-                    emptyAndNoTabs = !openTabs && emptyQueue;
 
-                if (emptyAndNoTabs && initialCrawlCompleted) {
-                    done();
-                }
-                if (emptyAndNoTabs || maxTabsAlreadyOpen || emptyQueue) {
-                    return;
-                }
+        let nextUrl = lists.processQueue.shift();
 
-                let nextUrl = lists.processQueue.shift();
-
-                if (lists.completedUrls.indexOf(nextUrl) >= 0) {
-                    next();
-                } else {
-                    GeneratorUtils.listAdd(nextUrl, lists.completedUrls);
-                    GeneratorUtils.launchTab(targetRenderer, nextUrl, done);
-                }
-            };
-
-        GeneratorUtils.getExistingTabs(targetRenderer, requestDomain, nextAction);
+        if (lists.completedUrls.indexOf(nextUrl) < 0) {
+            GeneratorUtils.listAdd(nextUrl, lists.completedUrls);
+            GeneratorUtils.launchTab(targetRenderer, nextUrl, done);
+        }
     }
 
     /**
