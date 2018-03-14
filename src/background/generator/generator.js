@@ -1,4 +1,4 @@
-import CenteredPopup from '../background/centeredPopup';
+import CenteredPopup from '../centeredPopup';
 import GeneratorUtils from './generatorUtils';
 import WebRequestListener from './webRequests';
 import QueueManager from './queueManager';
@@ -83,25 +83,25 @@ class Generator {
         };
 
         initialCrawlCompleted = false;
+        requestListener = new WebRequestListener(requestDomain,
+            successCodes, contenttypePatterns,
+            {
+                onMessage: this.generatorApi,
+                onNext: this.navigateToNext,
+                onUrls: this.processDiscoveredUrls,
+                onTerminate: this.onComplete,
+                onError: onError,
+                onSuccess: onSuccess
+            });
+
         CenteredPopup.open(800, 800, launchPage, 'normal')
             .then((window) => {
                 targetRenderer = window.id;
                 // 1. add the first url to processing queue
                 lists.pending.add(url);
-                // 2. register webRequest listener where we listen to successful http request events;
-                requestListener = new WebRequestListener(requestDomain,
-                    successCodes, contenttypePatterns,
-                    {
-                        onMessage: this.generatorApi,
-                        onNext: this.navigateToNext,
-                        onUrls: this.processDiscoveredUrls,
-                        onTerminate: this.onComplete,
-                        onError: onError,
-                        onSuccess: onSuccess
-                    });
-                // 3. navigate to first url
+                // 2. navigate to first url
                 this.navigateToNext();
-                // 4. start interval that progressively works through the queue
+                // 3. start interval that progressively works through the queue
                 progressInterval = setInterval(this.navigateToNext, 500);
             });
     }

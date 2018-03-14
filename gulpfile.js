@@ -5,16 +5,17 @@ let fs = require('fs');
 let webpack = require('webpack-stream');
 let $ = require('gulp-load-plugins')();
 let argv = require('yargs').argv;
-let isProd = (argv.env === 'build'); 
+let webpackConfig = require(paths.webpack);
+let isProd = (argv.env === 'build');
 
 gulp.task('default', [
     'clean',
+    'build-js',
     'copy-manifest',
     'copy-images',
     'copy-locales',
     'build-html',
     'build-css',
-    'build-js',
     'watch'
 ]);
 
@@ -97,33 +98,39 @@ gulp.task('build-html', function () {
         .pipe(gulp.dest(paths.dist));
 });
 
-gulp.task('build-js', function () {
- 
-    gulp.src(paths.process)
-        .pipe(webpack(require(paths.webpack)))
+gulp.task('js-process', function () {
+    return gulp.src(paths.process)
+        .pipe(webpack(webpackConfig))
         .pipe($.rename(function (path) {
             path.dirname = "";
             path.basename = "process"
         })).pipe(gulp.dest(paths.dist));
-        
-    gulp.src(paths.setup)
-        .pipe(webpack(require(paths.webpack)))
+});
+gulp.task('js-setup', function () {
+    return gulp.src(paths.setup)
+        .pipe(webpack(webpackConfig))
         .pipe($.rename(function (path) {
             path.dirname = "";
             path.basename = "setup"
         })).pipe(gulp.dest(paths.dist));
-
-    gulp.src(paths.background)
-        .pipe(webpack(require(paths.webpack)))
+});
+gulp.task('js-bg', function () {
+    return gulp.src(paths.background)
+        .pipe(webpack(webpackConfig))
         .pipe($.rename(function (path) {
             path.dirname = "";
             path.basename = "background"
         })).pipe(gulp.dest(paths.dist));
-
+});
+gulp.task('js-content', function () {
     return gulp.src(paths.content)
-        .pipe(webpack(require(paths.webpack)))
+        .pipe(webpack(webpackConfig))
         .pipe($.rename(function (path) {
             path.dirname = "";
             path.basename = "content"
         })).pipe(gulp.dest(paths.dist));
-})
+});
+
+gulp.task('build-js',
+    ['js-bg', 'js-process', 'js-setup', 'js-content'],
+    function () { return true; });
