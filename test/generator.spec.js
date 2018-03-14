@@ -1,9 +1,9 @@
 import chrome from 'sinon-chrome';
 import chai from 'chai';
-import Generator from '../src/generator/generator';
-import QueueManager from '../src/generator/queueManager';
-import WebRequests from '../src/generator/webRequests';
-import GeneratorUtils from '../src/generator/generatorUtils';
+import Generator from '../src/background/generator/generator';
+import QueueManager from '../src/background/generator/queueManager';
+import WebRequests from '../src/background/generator/webRequests';
+import GeneratorUtils from '../src/background/generator/generatorUtils';
 
 const expect = chai.expect;
 
