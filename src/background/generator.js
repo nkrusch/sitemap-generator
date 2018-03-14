@@ -120,9 +120,9 @@ class Generator {
         if (request.terminate) {
             this.onComplete();
         } else if (request.noindex) {
-            Generator.noindex(request.noindex);
+            Generator.excludeFromIndex(request.noindex);
         } else if (request.urls) {
-            this.urlMessage(request.urls, sender);
+            this.urlMessageReceived(request.urls, sender);
         } else if (request.status) {
             return sendResponse(Generator.status());
         } else if (request.crawlUrl) {
@@ -148,7 +148,7 @@ class Generator {
      * @description Exclude discovered url from sitemap
      * @param {String} url - the url that should not be included in the sitemap
      */
-    static noindex(url) {
+    static excludeFromIndex(url) {
         url = encodeURI(url);
         GeneratorUtils.listAdd(url, lists.completedUrls);
 
@@ -186,7 +186,7 @@ class Generator {
      * @description When url message is received, process urls,
      * then close tab that sent the message
      */
-    urlMessage(urls, sender) {
+    urlMessageReceived(urls, sender) {
         this.processDiscoveredUrls(urls);
         if (sender && sender.tab) {
             window.chrome.tabs.remove(sender.tab.id);
@@ -202,7 +202,6 @@ class Generator {
         if (terminating) {
             return;
         }
-
         terminating = true;
         clearInterval(progressInterval);
 
@@ -230,48 +229,32 @@ class Generator {
         if (terminating) {
             return;
         }
-        let oncComplete = this.onComplete,
-            next = this.navigateToNext;
+        let done = this.onComplete,
+            next = this.navigateToNext,
+            nextAction = (tabs) => {
+                let openTabs = (tabs || []).length,
+                    emptyQueue = !lists.processQueue.length,
+                    maxTabsAlreadyOpen = openTabs > maxTabCount,
+                    emptyAndNoTabs = !openTabs && emptyQueue;
 
-        window.chrome.tabs.query({
-            windowId: targetRenderer,
-            url: requestDomain
-        }, function (tabs) {
-
-            let openTabsCount = (tabs || []).length;
-
-            if (openTabsCount === 0 &&
-                lists.processQueue.length === 0) {
-                if (initialCrawlCompleted) {
-                    oncComplete();
+                if (emptyAndNoTabs && initialCrawlCompleted) {
+                    done();
                 }
-                return;
-            }
-
-            if (openTabsCount > maxTabCount ||
-                lists.processQueue.length === 0) {
-                return;
-            }
-
-            let nextUrl = lists.processQueue.shift();
-
-            // double check that we are not trying to open previously checked urls
-            if (lists.completedUrls.indexOf(nextUrl) >= 0) {
-                next();
-                return;
-            }
-
-            GeneratorUtils.listAdd(nextUrl, lists.completedUrls);
-            window.chrome.tabs.create({
-                url: nextUrl,
-                windowId: targetRenderer,
-                active: false
-            }, function () {
-                if (window.chrome.runtime.lastError) {
-                    oncComplete();
+                if (emptyAndNoTabs || maxTabsAlreadyOpen || emptyQueue) {
+                    return;
                 }
-            });
-        });
+
+                let nextUrl = lists.processQueue.shift();
+
+                if (lists.completedUrls.indexOf(nextUrl) >= 0) {
+                    next();
+                } else {
+                    GeneratorUtils.listAdd(nextUrl, lists.completedUrls);
+                    GeneratorUtils.launchTab(targetRenderer, nextUrl, done);
+                }
+            };
+
+        GeneratorUtils.getExistingTabs(targetRenderer, requestDomain, nextAction);
     }
 
     /**

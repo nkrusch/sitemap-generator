@@ -89,6 +89,23 @@ class GeneratorUtils {
     }
 
     /**
+     * @description Launch tab for specific url
+     * @param {Number} windowId - parent window
+     * @param {String} url
+     * @param {function} errorCallback - handler if this request fails
+     */
+    static launchTab(windowId, url, errorCallback) {
+        window.chrome.tabs.create({
+            url: url,
+            windowId: windowId,
+            active: false
+        }, () => {
+            return !window.chrome.runtime.lastError ||
+                errorCallback();
+        });
+    }
+
+    /**
      * @description Read headers array looking for specified key
      * @param {Array<Object>} headers - http headers
      * @param {String} key - header name
