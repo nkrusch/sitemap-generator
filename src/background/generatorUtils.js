@@ -147,6 +147,62 @@ class GeneratorUtils {
             url: domain
         }, callback);
     }
+
+    /**
+     * @description Check if url should be excluded based on its file type
+     * @param {String} test - uri string to test
+     * @param {Array<String>} excludedTypes - file types that should be excluded
+     */
+    static testFileExtension(test, excludedTypes) {
+
+        let badFileExtension = false;
+
+        if (test.indexOf('/') > -1) {
+            let parts = test.split('/'),
+                last = parts[parts.length - 1];
+
+            if (last.length) {
+                badFileExtension = excludedTypes.filter(function (f) {
+                    return (last.indexOf(f) > 0);
+                }).length > 0;
+            }
+        }
+
+        return badFileExtension;
+    }
+
+    /**
+     * @description When urls are discovered, run them
+     * through this url formatter
+     * @param {String} u
+     * @param {Object} lists
+     * @returns {string|*}
+     */
+    static urlFormatter(u, lists) {
+        // make sure all urls are encoded
+        u = encodeURI(u);
+
+        // if SHEBANG
+        if (u.indexOf('#!') > 0) {
+            let page = u.substr(0, u.indexOf('#!')),
+                success = lists.successUrls.indexOf(page) > -1,
+                error = lists.errorHeaders.indexOf(page) > -1;
+
+            if (success || error) {
+                GeneratorUtils.listAdd(u, lists.completedUrls);
+                if (success) {
+                    GeneratorUtils.listAdd(u, lists.successUrls);
+                }
+                if (error) {
+                    GeneratorUtils.listAdd(u, lists.errorHeaders);
+                }
+            }
+        } else if (u.indexOf('#') > 0) {
+            // clear all other Hashes
+            u = u.substr(0, u.indexOf('#'));
+        }
+        return u;
+    }
 }
 
 export default GeneratorUtils;

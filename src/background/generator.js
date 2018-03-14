@@ -273,53 +273,24 @@ class Generator {
     processDiscoveredUrls(urls) {
         (urls || []).map((u) => {
 
-            // make sure all urls are encoded
-            u = encodeURI(u);
-
-            // if there is successful entry for hashbang path
-            // automatically record save result for the hashbang path
-            if (u.indexOf('#!') > 0) {
-                let page = u.substr(0, u.indexOf('#!')),
-                    success = lists.successUrls.indexOf(page) > -1,
-                    error = lists.errorHeaders.indexOf(page) > -1;
-
-                if (success || error) {
-                    GeneratorUtils.listAdd(u, lists.completedUrls);
-                    if (success) {
-                        GeneratorUtils.listAdd(u, lists.successUrls);
-                    }
-                    if (error) {
-                        GeneratorUtils.listAdd(u, lists.errorHeaders);
-                    }
-                }
-            } else if (u.indexOf('#') > 0) {
-                u = u.substr(0, u.indexOf('#'));
-            }
-            return u;
+            // format received urls
+            return GeneratorUtils.urlFormatter(u, lists);
 
         }).filter(function (u) {
 
-            // filter for everything that is clearly not html or text
-            let badFileExtension = false,
-                test = u.replace(url, '');
+            let test = u.replace(url, '');
+            let badFileExtension = GeneratorUtils
+                .testFileExtension(test, excludeExtension);
 
-            if (test.indexOf('/') > -1) {
-                let parts = test.split('/'),
-                    last = parts[parts.length - 1];
-
-                if (last.length) {
-                    badFileExtension = excludeExtension.filter(function (f) {
-                        return (last.indexOf(f) > 0);
-                    }).length > 0;
-                }
-            }
             // filter down to new urls in target domain
+            // + exclude everything that is clearly not html/text
             return u.indexOf(url) === 0 &&
                 (lists.completedUrls.indexOf(u) < 0) &&
                 (lists.processQueue.indexOf(u) < 0) &&
                 !badFileExtension;
 
         }).map(function (u) {
+
             // if url makes it this far add it to queue
             GeneratorUtils.listAdd(u, lists.processQueue);
         });
