@@ -24,6 +24,9 @@ describe('Event pages', () => {
         before(() => {
             window.chrome = chrome;
         });
+        beforeEach(() => {
+            chrome.flush();
+        });
         it('constructor should register chrome onInstall listener', () => {
             expect(window.chrome.runtime.onInstalled.addListener.notCalled).to.be.true;
             new BackgroundEvents();

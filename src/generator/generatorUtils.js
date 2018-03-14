@@ -23,7 +23,7 @@ class GeneratorUtils {
         window.chrome.tabs.query({ url: downloadsPage + '/*' },
             function (result) {
                 if (result && result.length) {
-                    window.chrome.tabs.reload(result[0].id, null, function () {
+                    window.chrome.tabs.reload(result[0].id, null, () => {
                         window.chrome.tabs.update(result[0].id, { active: true });
                     });
                 } else {
@@ -42,10 +42,6 @@ class GeneratorUtils {
         if (!successUrls || !successUrls.length) {
             return;
         }
-
-        // for (var list in lists)
-        //     console.log(list + '\r\n' + lists[list].join('\r\n'));
-
         let entries = successUrls.sort().map((u) => {
             return '<url><loc>{u}</loc></url>'
                 .replace('{u}', encodeURI(u));
@@ -88,16 +84,15 @@ class GeneratorUtils {
      * @param {function} errorCallback - handler if this request fails
      */
     static launchTab(windowId, url, errorCallback) {
-        let callback = () => {
-            if (window.chrome.runtime.lastError) {
-                errorCallback();
-            }
-        }
         window.chrome.tabs.create({
             url: url,
             windowId: windowId,
             active: false
-        }, callback);
+        }, () => {
+            if (window.chrome.runtime.lastError) {
+                errorCallback();
+            }
+        });
     }
 
     /**
