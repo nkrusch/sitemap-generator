@@ -7,11 +7,11 @@ Generate sitemaps using Chrome browser. Especially intended for generating sitem
 [<img src="https://coveralls.io/repos/github/pikkumyy/sitemap-generator/badge.svg?branch=master">](https://coveralls.io/github/pikkumyy/sitemap-generator?branch=master)
 [<img src="https://api.codeclimate.com/v1/badges/ae33294f981eaf9303b6/maintainability">](https://codeclimate.com/github/pikkumyy/sitemap-generator/maintainability)
 [<img src="https://david-dm.org/pikkumyy/sitemap-generator.svg">](https://david-dm.org/pikkumyy/sitemap-generator)
-[<img src="https://david-dm.org/pikkumyy/sitemap-generator/dev-status.svg">](https://david-dm.org/pikkumyy/sitemap-generator?type=dev)
+[<img src="https://david-dm.org/pikkumyy/sitemap-generator/dev-status.svg">](https://david-dm.org/pikkumyy/sitemap-generator?type=dev)<br/>
 [<img src="https://img.shields.io/chrome-web-store/v/hcnjemngcihnhncobgdgkkfkhmleapah.svg">](https://chrome.google.com/webstore/detail/hcnjemngcihnhncobgdgkkfkhmleapah)
+[<img src="https://img.shields.io/chrome-web-store/users/hcnjemngcihnhncobgdgkkfkhmleapah.svg">](https://chrome.google.com/webstore/detail/hcnjemngcihnhncobgdgkkfkhmleapah)
+[<img src="https://img.shields.io/chrome-web-store/stars/hcnjemngcihnhncobgdgkkfkhmleapah.svg">](https://chrome.google.com/webstore/detail/hcnjemngcihnhncobgdgkkfkhmleapah)
 [<img src="https://img.shields.io/github/commits-since/pikkumyy/sitemap-generator/latest.svg">](https://github.com/pikkumyy/sitemap-generator)
-<img src="https://img.shields.io/chrome-web-store/users/hcnjemngcihnhncobgdgkkfkhmleapah.svg">
-<img src="https://img.shields.io/chrome-web-store/stars/hcnjemngcihnhncobgdgkkfkhmleapah.svg">	
 
 ## Installation
 
