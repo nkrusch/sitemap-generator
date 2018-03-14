@@ -20,15 +20,15 @@ class GeneratorUtils {
         document.body.appendChild(element);
         element.click();
 
-        window.chrome.tabs.query({url: downloadsPage + '/*'},
+        window.chrome.tabs.query({ url: downloadsPage + '/*' },
             function (result) {
                 if (result && result.length) {
                     window.chrome.tabs.reload(result[0].id, null, function () {
-                        window.chrome.tabs.update(result[0].id, {active: true});
+                        window.chrome.tabs.update(result[0].id, { active: true });
                     });
                 } else {
                     window.chrome.tabs.create(
-                        {url: downloadsPage, active: true});
+                        { url: downloadsPage, active: true });
                 }
             });
     }
@@ -88,14 +88,16 @@ class GeneratorUtils {
      * @param {function} errorCallback - handler if this request fails
      */
     static launchTab(windowId, url, errorCallback) {
+        let callback = () => {
+            if (window.chrome.runtime.lastError) {
+                errorCallback();
+            }
+        }
         window.chrome.tabs.create({
             url: url,
             windowId: windowId,
             active: false
-        }, () => {
-            return !window.chrome.runtime.lastError ||
-                errorCallback();
-        });
+        }, callback);
     }
 
     /**
@@ -173,20 +175,15 @@ class GeneratorUtils {
         let page = u.substr(0, u.indexOf('#!')),
             success = lists.success.contains(page),
             error = lists.error.contains(page);
-        // success = lists.successUrls.indexOf(page) > -1,
-        // error = lists.errorHeaders.indexOf(page) > -1;
 
         if (success || error) {
             lists.complete.add(u);
-            // GeneratorUtils.listAdd(u, lists.completedUrls);
         }
         if (success) {
             lists.success.add(u);
-            GeneratorUtils.listAdd(u, lists.successUrls);
         }
         if (error) {
             lists.error.add(u);
-            // GeneratorUtils.listAdd(u, lists.errorHeaders);
         }
     }
 

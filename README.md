@@ -1,7 +1,5 @@
 # Sitemap Generator
 
-Generate sitemaps using Chrome browser. Especially intended for generating sitemaps for single-page apps made with react, angular, etc.
-
 [<img src="https://travis-ci.org/pikkumyy/sitemap-generator.svg?branch=master">](https://travis-ci.org/pikkumyy/sitemap-generator)
 [<img src="http://inch-ci.org/github/pikkumyy/sitemap-generator.svg?branch=master">](https://inch-ci.org/github/pikkumyy/sitemap-generator)
 [<img src="https://coveralls.io/repos/github/pikkumyy/sitemap-generator/badge.svg?branch=master">](https://coveralls.io/github/pikkumyy/sitemap-generator?branch=master)
@@ -12,6 +10,8 @@ Generate sitemaps using Chrome browser. Especially intended for generating sitem
 [<img src="https://img.shields.io/chrome-web-store/users/hcnjemngcihnhncobgdgkkfkhmleapah.svg">](https://chrome.google.com/webstore/detail/hcnjemngcihnhncobgdgkkfkhmleapah)
 [<img src="https://img.shields.io/chrome-web-store/stars/hcnjemngcihnhncobgdgkkfkhmleapah.svg">](https://chrome.google.com/webstore/detail/hcnjemngcihnhncobgdgkkfkhmleapah)
 [<img src="https://img.shields.io/github/commits-since/pikkumyy/sitemap-generator/latest.svg">](https://github.com/pikkumyy/sitemap-generator)
+
+Generate sitemaps using Chrome browser. Especially intended for generating sitemaps for single-page apps made with react, angular, etc.
 
 ## Installation
 

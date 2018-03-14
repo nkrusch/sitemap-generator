@@ -3,11 +3,11 @@ import chai from 'chai';
 import Generator from '../src/generator/generator';
 import QueueManager from '../src/generator/queueManager';
 import WebRequests from '../src/generator/webRequests';
-import genUtils from '../src/generator/generatorUtils';
+import GeneratorUtils from '../src/generator/generatorUtils';
 
 const expect = chai.expect;
 
-let generator, queue, wr,
+let generator, queue, wr, wr_test,
     url = "https://www.test.com/",
     requestDomain = url + "/*",
     testPages = {
@@ -16,8 +16,8 @@ let generator, queue, wr,
         c: "https://www.test.com/home.html",
         d: "https://www.nottest.com/index.html"
     },
-    defaultConfig = {url: url, requestDomain: requestDomain},
-    defaultSender = {tab: {id: 1}};
+    defaultConfig = { url: url, requestDomain: requestDomain },
+    defaultSender = { tab: { id: 1 } };
 
 describe('Generator', () => {
     before(() => {
@@ -34,28 +34,28 @@ describe('Generator', () => {
         generator = new Generator(defaultConfig);
         it('noindex should not throw', () => {
             expect(() => generator
-                .generatorApi({noindex: 'https://www.google.com'}))
+                .generatorApi({ noindex: 'https://www.google.com' }))
                 .to.not.throw();
         });
         it('urls should not throw', () => {
-            expect(() => generator.generatorApi({urls: []})).to.not.throw();
+            expect(() => generator.generatorApi({ urls: [] })).to.not.throw();
         });
         it('crawlUrl should return base url', (done) => {
-            generator.generatorApi({crawlUrl: true}, defaultSender, (resp) => {
+            generator.generatorApi({ crawlUrl: true }, defaultSender, (resp) => {
                 expect(resp).to.equal(defaultConfig.url);
                 done();
             });
         });
         it('status should return object', (done) => {
-            generator.generatorApi({status: true}, defaultSender, (status) => {
+            generator.generatorApi({ status: true }, defaultSender, (status) => {
                 expect(status).to.be.an('Object')
                     .and.to.have.all.keys('url', 'queue',
-                    'completed', 'success', 'error');
+                        'completed', 'success', 'error');
                 done();
             });
         });
         it('fall through case should return false', () => {
-            expect(generator.generatorApi({badRequest: true})).to.be.false;
+            expect(generator.generatorApi({ badRequest: true })).to.be.false;
         });
     });
 
@@ -88,6 +88,57 @@ describe('Generator', () => {
                 });
             })
                 .to.not.throw();
+        });
+    });
+
+    describe('Utilities', () => {
+        it('makeSitemap executes without error', () => {
+            expect(() => {
+                GeneratorUtils.makeSitemap(url, [
+                    testPages.a, testPages.b, testPages.c
+                ])
+            }).to.not.throw();
+        });
+        it('closeTabs closes array of tabs', () => {
+            expect(window.chrome.tabs.remove.notCalled).to.be.true;
+            GeneratorUtils.closeTabs([{ id: 1 }, { id: 2 }]);
+            expect(window.chrome.tabs.remove.notCalled).to.be.false;
+            expect(window.chrome.tabs.remove.calledOnce).to.be.false;
+        });
+        it('launchTab calls error handler on failure', () => {
+            window.chrome.tabs.create.yields([1, 2]);
+            window.chrome.runtime.lastError = { message: 'Error' };
+            let errorCallback = () => { wr_test = 'tab_error' };
+            wr_test = '';
+
+            expect(window.chrome.tabs.create.notCalled).to.be.true;
+            GeneratorUtils.launchTab(1, testPages.a, errorCallback);
+            expect(window.chrome.tabs.create.notCalled).to.be.false;
+            expect(wr_test).to.equal('tab_error');
+        });
+        it('testFileExtension detects e.g. text vs. binary file types', () => {
+            let excludeTypes = ['.zip']
+            let matchTest = url + "file.zip";
+            expect(GeneratorUtils.testFileExtension(matchTest, excludeTypes)).to.be.true;
+            expect(GeneratorUtils.testFileExtension(testPages.a, excludeTypes)).to.be.false;
+        });
+        it('shebangHandler detects previously checked app path', () => {
+            let lists = new QueueManager();
+            let successTest = testPages.a + "#!" + "findMe";
+            let errorTest = testPages.b + "#!" + "imbad";
+            lists.success.add(testPages.a);
+            lists.error.add(testPages.b);
+            GeneratorUtils.urlFormatter(successTest, lists);
+            GeneratorUtils.urlFormatter(errorTest, lists);
+            expect(lists.success.contains(successTest)).to.be.true;
+            expect(lists.error.contains(errorTest)).to.be.true;
+        });
+        it('urlFormatter removes hash if it is not shebang', () => {
+            let lists = new QueueManager();
+            let keepTest = testPages.a + "#!keepMe";
+            let stripTest = testPages.a + "#stripMe";
+            expect(GeneratorUtils.urlFormatter(keepTest, lists)).to.equal(keepTest);
+            expect(GeneratorUtils.urlFormatter(stripTest, lists)).to.equal(testPages.a);
         });
     });
 
@@ -126,28 +177,42 @@ describe('Generator', () => {
     describe('WebRequests', () => {
         before(() => {
             wr = new WebRequests("google", [200], ["text/html"], {
-                onUrls: () => {
+                onUrls: (x) => {
+                    wr_test = x;
                 },
                 onError: () => {
+                    wr_test = 'error'
+                },
+                onSuccess: () => {
+                    wr_test = 'success'
                 }
             });
         });
-        it('onHeadersReceivedHandler executes without error', () => {
-            expect(() => WebRequests.onHeadersReceivedHandler({})).to.not.throw();
+        it('onHeadersReceivedHandler cancels invalid requests', () => {
+            let badRequest = WebRequests.onHeadersReceivedHandler({ responseHeaders: [] });
+            let goodRequest = WebRequests.onHeadersReceivedHandler({ responseHeaders: [{ name: 'content-type', value: 'text/html' }] });
+            expect(badRequest.cancel).to.be.true;
+            expect(goodRequest.cancel).to.be.false;
         });
-        it('onTabLoadListener executes without error', () => {
-            expect(() => WebRequests.onTabLoadListener({})).to.not.throw();
+        it('onTabLoadListener handles error and success correctly', () => {
+            WebRequests.onTabLoadListener({});
+            expect(wr_test).to.equal('error');
+            WebRequests.onTabLoadListener({ statusCode: 200 })
+            expect(wr_test).to.equal('success');
         });
-        it('onBeforeRedirect executes without error', () => {
-            expect(() => WebRequests.onBeforeRedirect({})).to.not.throw();
+        it('onBeforeRedirect queues redirect url and cancels', () => {
+            let result = WebRequests
+                .onBeforeRedirect({ redirectUrl: testPages.a });
+            expect(wr_test).to.contain(testPages.a);
+            expect(result.cancel).to.be.true;
         });
-        it('onTabErrorHandler executes without error', () => {
-            expect(() => WebRequests.onTabErrorHandler({})).to.not.throw();
+        it('onTabErrorHandler closes tab', () => {
+            expect(window.chrome.tabs.remove.notCalled).to.be.true;
+            WebRequests.onTabErrorHandler({})
+            expect(window.chrome.tabs.remove.calledOnce).to.be.true;
         });
         it('destroy executes without error', () => {
-            expect(() => {
-                wr.destroy()
-            }).to.not.throw();
+            expect(() => { wr.destroy() }).to.not.throw();
         });
     });
 
