@@ -40,6 +40,10 @@ This implementation is not practical if website contains tens of thousands of pa
 
 Source documentation is available here: https://pikkumyy.github.io/sitemap-generator
 
+This is a simplified diagram showing how the process works
+
+<img src="https://raw.githubusercontent.com/pikkumyy/sitemap-generator/master/system.png" alt='system' />
+
 #### Requirements
 
 To build and run this program locally you will need the following:
