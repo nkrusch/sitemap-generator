@@ -67,7 +67,7 @@ class BackgroundApi {
                 .handleGrantResponse(granted, config, sender);
 
         window.chrome.permissions.request({
-            permissions: ['tabs'],
+            permissions: ['tabs', 'downloads'],
             origins: [config.requestDomain]
         }, callback);
         return true;

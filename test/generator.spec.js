@@ -20,51 +20,55 @@ let generator, queue, wr, wr_test,
         url: url,
         requestDomain: requestDomain
     },
-    defaultSender = { tab: { id: 1 } };
+    defaultSender = {tab: {id: 1}};
 
 describe('Generator Modules', () => {
     before(() => {
         window.chrome = chrome;
+        window.URL.createObjectURL = () => {
+        };
     });
 
     describe('Generator', () => {
         it('should start and stop without error', () => {
             window.chrome.windows.create.yields({});
             window.chrome.tabs.query.yields([]);
-            defaultConfig.callback = () => { wr_test = 'hello'; }
+            defaultConfig.callback = () => {
+                wr_test = 'hello';
+            }
             wr_test = '';
 
             generator = new Generator(defaultConfig);
             generator.start();
-            generator.generatorApi({ terminate: true }, defaultSender);
+            generator.generatorApi({terminate: true}, defaultSender);
             expect(wr_test).to.equal('hello');
         });
         describe('Generator api', () => {
             generator = new Generator(defaultConfig);
             it('noindex should not throw', () => {
                 expect(() => generator
-                    .generatorApi({ noindex: 'https://www.google.com' }))
+                    .generatorApi({noindex: 'https://www.google.com'}))
                     .to.not.throw();
             });
             it('urls should not throw', () => {
-                expect(() => generator.generatorApi({ urls: [] })).to.not.throw();
+                expect(() => generator.generatorApi({urls: []})).to.not.throw();
             });
             it('crawlUrl should return base url', (done) => {
-                generator.generatorApi({ crawlUrl: true }, defaultSender, (resp) => {
+                generator.generatorApi({crawlUrl: true}, defaultSender, (resp) => {
                     expect(resp).to.equal(defaultConfig.url);
                     done();
                 });
             });
             it('status should return object', (done) => {
-                generator.generatorApi({ status: true }, defaultSender, (status) => {
+                generator.generatorApi({status: true}, defaultSender, (status) => {
                     expect(status).to.be.an('Object')
                         .and.to.have.all.keys('url', 'queue',
-                            'completed', 'success', 'error');
+                        'completed', 'success', 'error');
                     done();
                 });
             });
             it('fall through case should return false', () => {
-                expect(generator.generatorApi({ badRequest: true })).to.be.false;
+                expect(generator.generatorApi({badRequest: true})).to.be.false;
             });
         });
         describe('Next action', () => {
@@ -114,31 +118,11 @@ describe('Generator Modules', () => {
                 GeneratorUtils.makeSitemap(url, [])
             }).to.not.throw();
         });
-        it('makeSitemap activates DL page if already exists', () => {
-            window.chrome.tabs.query.yields([1]);
-            window.chrome.tabs.reload.yields([]);
-            let urls = [testPages.a, testPages.b, testPages.c];
-
-            expect(window.chrome.tabs.update.notCalled).to.be.true;
-            expect(() => {
-                GeneratorUtils.makeSitemap(url, urls)
-            }).to.not.throw();
-            expect(window.chrome.tabs.update.notCalled).to.be.false;
-        });
-        it('makeSitemap create tab for DL page if it doesnt exist', () => {
-            window.chrome.tabs.query.yields([]);
-            expect(window.chrome.tabs.create.notCalled).to.be.true;
-            let urls = [testPages.a, testPages.b, testPages.c];
-            expect(() => {
-                GeneratorUtils.makeSitemap(url, urls)
-            }).to.not.throw();
-            expect(window.chrome.tabs.create.notCalled).to.be.false;
-        });
         it('closeTabs closes array of tabs', () => {
             expect(window.chrome.tabs.remove.notCalled).to.be.true;
             GeneratorUtils.closeTabs([]);
             expect(window.chrome.tabs.remove.notCalled).to.be.true;
-            GeneratorUtils.closeTabs([{ id: 1 }, { id: 2 }]);
+            GeneratorUtils.closeTabs([{id: 1}, {id: 2}]);
             expect(window.chrome.tabs.remove.notCalled).to.be.false;
             expect(window.chrome.tabs.remove.calledOnce).to.be.false;
         });
@@ -158,8 +142,10 @@ describe('Generator Modules', () => {
         });
         it('loadContentScript calls error handler on failure', () => {
             window.chrome.tabs.executeScript.yields([1, 2]);
-            window.chrome.runtime.lastError = { message: 'Error' };
-            let errorCallback = () => { wr_test = 'load_error' };
+            window.chrome.runtime.lastError = {message: 'Error'};
+            let errorCallback = () => {
+                wr_test = 'load_error'
+            };
             wr_test = '';
 
             expect(window.chrome.tabs.executeScript.notCalled).to.be.true;
@@ -169,8 +155,10 @@ describe('Generator Modules', () => {
         });
         it('launchTab calls error handler on failure', () => {
             window.chrome.tabs.create.yields([1, 2]);
-            window.chrome.runtime.lastError = { message: 'Error' };
-            let errorCallback = () => { wr_test = 'tab_error' };
+            window.chrome.runtime.lastError = {message: 'Error'};
+            let errorCallback = () => {
+                wr_test = 'tab_error'
+            };
             wr_test = '';
 
             expect(window.chrome.tabs.create.notCalled).to.be.true;
@@ -181,7 +169,9 @@ describe('Generator Modules', () => {
         it('launchTab does not call error handler without failure', () => {
             window.chrome.tabs.create.yields([1, 2]);
             window.chrome.runtime.lastError = null;
-            let errorCallback = () => { wr_test = 'tab_error' };
+            let errorCallback = () => {
+                wr_test = 'tab_error'
+            };
             wr_test = 'not_called';
             expect(window.chrome.tabs.create.notCalled).to.be.true;
             GeneratorUtils.launchTab(1, testPages.a, errorCallback);
@@ -189,7 +179,7 @@ describe('Generator Modules', () => {
             expect(wr_test).to.equal('not_called');
         });
         it('getHeaderValue return empty string if not found', () => {
-            expect(GeneratorUtils.getHeaderValue([{ name: 'x' }], "whatever")).to.be.empty;
+            expect(GeneratorUtils.getHeaderValue([{name: 'x'}], "whatever")).to.be.empty;
         });
         it('testFileExtension detects e.g. text vs. binary file types', () => {
             let excludeTypes = ['.zip']
@@ -265,20 +255,25 @@ describe('Generator Modules', () => {
             });
         });
         it('onHeadersReceivedHandler cancels invalid requests', () => {
-            let badRequest = WebRequests.onHeadersReceivedHandler({ responseHeaders: [] });
-            let goodRequest = WebRequests.onHeadersReceivedHandler({ responseHeaders: [{ name: 'content-type', value: 'text/html' }] });
+            let badRequest = WebRequests.onHeadersReceivedHandler({responseHeaders: []});
+            let goodRequest = WebRequests.onHeadersReceivedHandler({
+                responseHeaders: [{
+                    name: 'content-type',
+                    value: 'text/html'
+                }]
+            });
             expect(badRequest.cancel).to.be.true;
             expect(goodRequest.cancel).to.be.false;
         });
         it('onTabLoadListener handles error and success correctly', () => {
             WebRequests.onTabLoadListener({});
             expect(wr_test).to.equal('error');
-            WebRequests.onTabLoadListener({ statusCode: 200 })
+            WebRequests.onTabLoadListener({statusCode: 200})
             expect(wr_test).to.equal('success');
         });
         it('onBeforeRedirect queues redirect url and cancels', () => {
             let result = WebRequests
-                .onBeforeRedirect({ redirectUrl: testPages.a });
+                .onBeforeRedirect({redirectUrl: testPages.a});
             expect(wr_test).to.contain(testPages.a);
             expect(result.cancel).to.be.true;
         });
@@ -288,7 +283,9 @@ describe('Generator Modules', () => {
             expect(window.chrome.tabs.remove.calledOnce).to.be.true;
         });
         it('destroy executes without error', () => {
-            expect(() => { wr.destroy() }).to.not.throw();
+            expect(() => {
+                wr.destroy()
+            }).to.not.throw();
         });
     });
 

@@ -1,6 +1,6 @@
 {
   "name": "sitemap-generator",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "license": "MIT",
   "author": "Professor Chaos",
   "description": "Use chrome browser to generate sitemaps for your websites. This extension crawls website like a real user.",
@@ -31,7 +31,7 @@
     "cross-env": "^5.1.4",
     "del": "^3.0.0",
     "docdash": "latest",
-    "eslint": "^4.18.2",
+    "eslint": "^4.19.1",
     "eslint-loader": "^2.0.0",
     "gulp": "latest",
     "gulp-clean-css": "^3.9.3",
@@ -48,12 +48,12 @@
     "jsdoc": "^3.5.5",
     "jsdom": "11.6.2",
     "jsdom-global": "3.0.2",
-    "mocha": "^5.0.4",
+    "mocha": "^5.0.5",
     "mocha-lcov-reporter": "^1.3.0",
     "nyc": "^11.6.0",
     "sinon-chrome": "^2.3.1",
     "standard-version": "^4.3.0",
-    "webpack-stream": "^4.0.2",
+    "webpack-stream": "^4.0.3",
     "yargs": "^11.0.0"
   }
 }

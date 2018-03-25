@@ -8,7 +8,7 @@ class Process {
 
         // bind event handlers
         document.getElementById('close').onclick = (e) => {
-            window.chrome.runtime.sendMessage({ terminate: true });
+            window.chrome.runtime.sendMessage({terminate: true});
             e.target.innerText = 'Terminating....';
         };
 
@@ -19,13 +19,15 @@ class Process {
 
         // after first 10x increase the interval
         setInterval(Process.checkStatus, 10000);
+
+        window.ga('send', 'event', 'sitemap-generator', 'runner', null, 1);
     }
 
     /**
      * @description Request information about current processing status from the background
      */
     static checkStatus() {
-        window.chrome.runtime.sendMessage({ status: true }, Process.handleStatusResponse);
+        window.chrome.runtime.sendMessage({status: true}, Process.handleStatusResponse);
     }
 
     /**

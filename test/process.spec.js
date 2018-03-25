@@ -11,8 +11,12 @@ describe('Process Page', () => {
         window.chrome = chrome;
         document.documentElement.innerHTML = require('fs')
             .readFileSync('./src/templates/process.html', 'utf8');
-        global.setTimeout = () => { };
-        global.setInterval = () => { };
+        global.setTimeout = () => {
+        };
+        global.setInterval = () => {
+        };
+        window.ga = () => {
+        };
         Process = require('../src/ui/process.js');
     });
     beforeEach(function () {
@@ -32,7 +36,7 @@ describe('Process Page', () => {
         document.documentElement.innerHTML = "<div id='me'></div>";
         let value = 10, uifield = document.getElementById('me');
 
-        Process.handleStatusResponse({ me: value, too: value + 1 });
+        Process.handleStatusResponse({me: value, too: value + 1});
         expect(uifield.innerText.toString()).to.have.string(value.toString())
     });
 });

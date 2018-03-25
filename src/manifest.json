@@ -2,11 +2,12 @@
   "name": "__MSG_appName__",
   "short_name": "__MSG_appShortName__",
   "description": "__MSG_appDesc__",
-  "version": "0.1.4",
-  "version_name": "0.1.4",
+  "version": "0.1.5",
+  "version_name": "0.1.5",
   "manifest_version": 2,
   "default_locale": "en",
-  "minimum_chrome_version": "31",
+  "incognito": "not_allowed",
+  "minimum_chrome_version": "46",
   "homepage_url": "https://chrome.google.com/webstore/detail/hcnjemngcihnhncobgdgkkfkhmleapah",
   "permissions": [
     "activeTab",
@@ -14,7 +15,9 @@
     "webRequestBlocking",
     "system.display"
   ],
+  "content_security_policy": "script-src 'self' 'sha256-rwQFR+Lqw7LzDK8rVQATBE+3CIpTqJlKlhIbusXISKE=' https://www.google-analytics.com; object-src 'self'",
   "optional_permissions": [
+    "downloads",
     "tabs",
     "http://*/*",
     "https://*/*"

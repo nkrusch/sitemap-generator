@@ -1,4 +1,4 @@
-const downloadsPage = 'chrome://downloads';
+// const downloadsPage = 'chrome://downloads';
 
 /**
  * @class
@@ -11,26 +11,17 @@ class GeneratorUtils {
      * @param {String} text - base64 file content
      */
     static download(filename, text) {
-        let element = document.createElement('a');
 
-        element.setAttribute('href',
-            'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-        element.setAttribute('download', filename);
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
+        let myblob = new Blob([text], {
+                type: 'text/xml'
+            }),
+            fileObjectURL = URL.createObjectURL(myblob);
 
-        window.chrome.tabs.query({ url: downloadsPage + '/*' },
-            function (result) {
-                if (result && result.length) {
-                    window.chrome.tabs.reload(result[0].id, null, () => {
-                        window.chrome.tabs.update(result[0].id, { active: true });
-                    });
-                } else {
-                    window.chrome.tabs.create(
-                        { url: downloadsPage, active: true });
-                }
-            });
+        window.open(fileObjectURL);
+        window.chrome.downloads.download({
+            url: fileObjectURL,
+            filename: filename
+        });
     }
 
     /**
