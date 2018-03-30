@@ -7,7 +7,6 @@
     },
     "source": {
         "include": [
-            "README.md",
             "src"
         ],
         "includePattern": ".js$",
