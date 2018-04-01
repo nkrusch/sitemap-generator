@@ -6,7 +6,7 @@
         ]
     },
     "source": {
-        "include": [
+        "include": [ 
             "src"
         ],
         "includePattern": ".js$",
@@ -21,10 +21,10 @@
         "useLongnameInNav": false
     },
     "opts": {
-        "destination": "./docs/",
+        "destination": "./docs/docs.json",
         "encoding": "utf8",
         "private": true,
         "recurse": true,
-        "template": "./node_modules/docdash"
+        "template": "./node_modules/jsdoc-json"
     }
 }

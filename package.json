@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "gulp --progress --watch --colors --env dev",
     "build": "npm run test && gulp --env build -- release",
-    "docs": "./node_modules/.bin/jsdoc --configure ./config/docs.config.json",
+        "docs": "gulp doc-dir && ./node_modules/.bin/jsdoc --configure ./config/docs.config.json",
     "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
     "test:watch": "mocha --require babel-core/register --colors -w ./test/*.spec.js",
     "test:coverage": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text mocha --require babel-core/register test/*.spec.js",
@@ -30,7 +30,7 @@
     "coveralls": "^3.0.0",
     "cross-env": "^5.1.4",
     "del": "^3.0.0",
-    "docdash": "latest",
+    "jsdoc-json": "2.0.2",
     "eslint": "^4.19.1",
     "eslint-loader": "^2.0.0",
     "gulp": "latest",
