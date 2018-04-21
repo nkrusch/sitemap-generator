@@ -15,7 +15,7 @@ To build and run this program locally you will need the following:
 
 ### Build Instructions / Basic Usage
 
-1) Clone the repo 
+1) Clone the repo - or - [click here to fork](https://github.com/pikkumyy/sitemap-generator/fork)
 ```
 https://github.com/pikkumyy/sitemap-generator.git
 ```
