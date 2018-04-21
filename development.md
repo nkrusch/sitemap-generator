@@ -25,7 +25,14 @@ https://github.com/pikkumyy/sitemap-generator.git
   
 #### Full List of CLI options
 
-see `package.json` scripts  
+| Command | Details |
+| --- | --- |
+| yarn dev | run dev build and continue watching changes |
+| yarn build | run production build |
+| yarn test | run unit tests |
+| yarn test:watch | run unit tests and continue to watch changes |
+| yarn test:coverage | analyze test code coverage |
+| yarn release | increment version and commit |
 
 #### Debug Instructions
 
@@ -36,3 +43,16 @@ Using Chrome browser:
 2) Click `Load unpacked extension...`
 
 3) Choose the `dist/` directory. 
+
+## Repo organization
+
+| Directory/File | Purpose |
+| --- | --- |
+| /assets | static resources |
+| /assets/img | icons |
+| /assets/locales | string dictionaries for localization |
+| /config | various build configuration files |
+| /src | source code |
+| /src/manifest.json | manifest |
+| /test | unit tests |
+| / | project configuration files |
