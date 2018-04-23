@@ -6,7 +6,8 @@
         ]
     },
     "source": {
-        "include": [ 
+        "include": [
+            "README.md",
             "src"
         ],
         "includePattern": ".js$",
@@ -16,15 +17,38 @@
         "plugins/markdown"
     ],
     "templates": {
-        "cleverLinks": false,
-        "monospaceLinks": true,
-        "useLongnameInNav": false
+        "systemName": "Sitemap Generator",
+        "systemSummary": "<img src='http://inch-ci.org/github/pikkumyy/sitemap-generator.svg?branch=master' alt='badge' /> You are viewing application source code documentation. <br/>To view details about this projects please see <a href='http://www.sneeak.com/sitemap-generator' style='color:#fff'>sneeak.com/sitemap-generator</a>",
+        "systemColor": "#009688",
+        "footer": "",
+        "copyright": "",
+        "includeDate": "true",
+        "dateFormat": "MMM YYYY",
+        "inlineNav": "true",
+        "inverseNav": "false",
+        "linenums": "true",
+        "showTableOfContents": "true",
+        "showAccessFilter": "true",
+        "analytics": {
+            "ua": "UA-81731558-12",
+            "domain": "http://www.sneeak.com/sitemap-generator/docs/documentation"
+        },
+        "collapseSymbols": "true",
+        "methodHeadingReturns": "false",
+        "outputSourceFiles": "true",
+        "outputSourcePath": "true",
+        "search": "true",
+        "favicon": "./assets/img/128x128.png",
+        "stylesheets": [
+            "data:text/css;base64,Zm9vdGVyewogICAgZGlzcGxheTpub25lIWltcG9ydGFudDsKfQ=="
+        ],
+        "scripts": []
     },
     "opts": {
-        "destination": "./docs/docs.json",
+        "destination": "./docs/documentation",
         "encoding": "utf8",
         "private": true,
         "recurse": true,
-        "template": "./node_modules/jsdoc-json"
+        "template": "./node_modules/foodoc/template"
     }
 }

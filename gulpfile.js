@@ -19,12 +19,6 @@ gulp.task('default', [
     'watch'
 ]);
 
-gulp.task('doc-dir', function () {
-if (!fs.existsSync('docs')){
-    fs.mkdirSync('docs');
-}
-});
-
 gulp.task('release', ['default'], function () {
     return gulp.src(paths.dist + '/**/*')
         .pipe($.zip('release.zip'))
