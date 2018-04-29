@@ -8,6 +8,10 @@ The latest version is available for installation at Chrome Web Store.
 
 **[Install here](https://chrome.google.com/webstore/detail/hcnjemngcihnhncobgdgkkfkhmleapah "Sitemap Generator")**
 
+<br/><br/>
+<img src="https://raw.githubusercontent.com/pikkumyy/sitemap-generator/docs/preview.gif" alt="preview" />
+    
+    
 ## Idea 💡
 
 I make a lot of web apps using react and angular. I know there are dev tools that allow generating sitemaps but these require more or less custom setup. I also tried online services that offer to create sitemaps, but found that these were not actually rendering the client side code. My last attempt was trying a service that said it would run in the browser but required some custom code be placed on the website to circumvent cors. At this point I gave up and made my own solution. I decided to make a chrome extension because it addresses many of the issues that occur with the above solutions: 
