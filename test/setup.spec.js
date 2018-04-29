@@ -10,8 +10,8 @@ describe('Setup Page', () => {
     before(() => {
         window.chrome = chrome;
         document.documentElement.innerHTML = require('fs')
-            .readFileSync('./src/templates/setup.html', 'utf8');
-        Setup = require('../src/ui/setup.js');
+            .readFileSync('./src/setup/setup.html', 'utf8');
+        Setup = require('../src/setup/setup.js');
         chrome.flush();
     });
     beforeEach(function () {

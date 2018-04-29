@@ -1,4 +1,4 @@
-import CenteredPopup from '../centeredPopup';
+import {CenteredPopup} from 'pm-boot-extension';
 import GeneratorUtils from './generatorUtils';
 import WebRequestListener from './webRequests';
 import QueueManager from './queueManager';

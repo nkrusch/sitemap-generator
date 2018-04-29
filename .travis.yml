@@ -1,31 +1,29 @@
 language: node_js
 node_js:
-  - "stable"
+  - "8.11.1"
 cache:
   directories:
   - node_modules
-script: 
+script:
   - npm run docs
 before_deploy:
   - npm run build
 deploy:
-  - edge:
-      branch: v1.8.47
-    provider: pages
+  - provider: pages
     skip_cleanup: true
     github_token: $github_token
     local_dir: docs
     on:
       branch: master
-  - edge:
-      branch: v1.8.47
-    provider: releases
+  - provider: releases
     skip_cleanup: true
     api_key: $github_token
     file: release.zip
     on:
       tags: true
-after_deploy:
-  - if [ ! -z  "$TRAVIS_TAG" ]; then npx cws-upload $cws_client_id $cws_client_secret $cws_token ./release.zip hcnjemngcihnhncobgdgkkfkhmleapah; fi
 after_success:
   - npm run report-coverage
+after_deploy:
+  - if [ ! -z  "$TRAVIS_TAG" ]; then
+      npx cws-upload $cws_client_id $cws_client_secret $cws_token ./release.zip $extension_id;
+    fi

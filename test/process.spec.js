@@ -10,14 +10,14 @@ describe('Process Page', () => {
     before(() => {
         window.chrome = chrome;
         document.documentElement.innerHTML = require('fs')
-            .readFileSync('./src/templates/process.html', 'utf8');
+            .readFileSync('./src/process/process.html', 'utf8');
         global.setTimeout = () => {
         };
         global.setInterval = () => {
         };
         window.ga = () => {
         };
-        Process = require('../src/ui/process.js');
+        Process = require('../src/process/process.js');
     });
     beforeEach(function () {
         chrome.flush();

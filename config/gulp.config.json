@@ -10,6 +10,7 @@
   "scss": "./src/**/*.scss",
   "icons": [
     "./assets/img//**/*.png",
+    "./assets/img/**/*.gif",
     "./assets/img/**/*.svg"
   ],
   "locales": "./assets/locales/",
@@ -20,6 +21,6 @@
   ],
   "background": "./src/background/**/*.js",
   "content": "./src/crawler/**/*.js",
-  "setup": "./src/ui/setup.js",
-  "process": "./src/ui/process.js"
+  "setup": "./src/setup/setup.js",
+  "process": "./src/process/process.js"
 }
