@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/pikkumyy/sitemap-generator/docs/sitemap.gif" width="500" style='float:right; margin-left: 30px; margin-bottom: 30px;' alt="preview" />
+
 # Sitemap Generator
 
 Generate sitemaps using Chrome browser. Especially intended for generating sitemaps for single-page apps made with react, angular, etc.
@@ -7,9 +9,6 @@ Generate sitemaps using Chrome browser. Especially intended for generating sitem
 The latest version is available for installation at Chrome Web Store.
 
 **[Install here](https://chrome.google.com/webstore/detail/hcnjemngcihnhncobgdgkkfkhmleapah "Sitemap Generator")**
-
-<br/><br/>
-<img src="https://raw.githubusercontent.com/pikkumyy/sitemap-generator/docs/preview.gif" alt="preview" />
     
     
 ## Idea 💡
