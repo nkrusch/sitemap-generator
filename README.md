@@ -2,8 +2,6 @@
 
 Generate sitemaps using Chrome browser. Especially intended for generating sitemaps for single-page apps made with react, angular, etc.
 
-<img src="https://raw.githubusercontent.com/pikkumyy/sitemap-generator/docs/sitemap.gif" width="500" style='float:right; margin-left:30px;margin-bottom:30px;display:table;' alt="preview" />
-
 ## Installation
 
 The latest version is available for installation at Chrome Web Store.
