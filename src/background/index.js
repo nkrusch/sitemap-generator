@@ -1,5 +1,5 @@
 import BackgroundApi from './backgroundApi';
-import {OnInstallHandler} from 'pm-boot-extension';
+import {OnInstallHandler} from 'pm-components';
 
 (() => new OnInstallHandler({
     action: OnInstallHandler.options.openUri,

@@ -1,0 +1,27 @@
+{
+  "icons": [
+    "./assets/img//**/*.png",
+    "./assets/img/**/*.gif",
+    "./assets/img/**/*.svg"
+  ],
+  "js": {
+    "bundles": {
+      "background_js": {
+        "name": "background",
+        "src": "./src/background/**/*.js"
+      },
+      "content": {
+        "name": "content",
+        "src": "./src/crawler/**/*.js"
+      },
+      "setup": {
+        "name": "setup",
+        "src": "./src/setup/setup.js"
+      },
+      "process": {
+        "name": "process",
+        "src": "./src/process/process.js"
+      }
+    }
+  }
+}

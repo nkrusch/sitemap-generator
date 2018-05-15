@@ -1,4 +1,4 @@
-import { CenteredPopup } from 'pm-boot-extension';
+import { CenteredPopup } from 'pm-components';
 import Generator from './generator/generator.js';
 
 let generator;
