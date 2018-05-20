@@ -19,10 +19,10 @@ deploy:
   - provider: releases
     skip_cleanup: true
     api_key: $github_token
-    file: release.zip
+    file: $zip
     on:
       tags: true
 after_deploy:
   - if [ ! -z  "$TRAVIS_TAG" ]; then
-      npx cws-upload $cws_client_id $cws_client_secret $cws_token ./release.zip $extension_id;
+      npx cws-upload $cid $sec $tkn $zip $eid;
     fi

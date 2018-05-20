@@ -1697,7 +1697,7 @@ commander@2.14.x, commander@^2.10.0, commander@^2.9.0, commander@~2.14.1:
   version "2.14.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.14.1.tgz#2235123e37af8ca3c65df45b026dbd357b01b9aa"
 
-commander@^2.15.1, commander@~2.15.0:
+commander@2.15.1, commander@^2.15.1, commander@~2.15.0:
   version "2.15.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.15.1.tgz#df46e867d0fc2aec66a34662b406a9ccafff5b0f"
 
@@ -3433,6 +3433,10 @@ graceful-fs@~1.2.0:
 growl@1.10.3:
   version "1.10.3"
   resolved "https://registry.yarnpkg.com/growl/-/growl-1.10.3.tgz#1926ba90cf3edfe2adb4927f5880bc22c66c790f"
+
+growl@1.10.5:
+  version "1.10.5"
+  resolved "https://registry.yarnpkg.com/growl/-/growl-1.10.5.tgz#f2735dc2283674fa67478b10181059355c369e5e"
 
 grunt-cli@~1.2.0:
   version "1.2.0"
@@ -5295,6 +5299,22 @@ mocha@^5.1.1:
     mkdirp "0.5.1"
     supports-color "4.4.0"
 
+mocha@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/mocha/-/mocha-5.2.0.tgz#6d8ae508f59167f940f2b5b3c4a612ae50c90ae6"
+  dependencies:
+    browser-stdout "1.3.1"
+    commander "2.15.1"
+    debug "3.1.0"
+    diff "3.5.0"
+    escape-string-regexp "1.0.5"
+    glob "7.1.2"
+    growl "1.10.5"
+    he "1.1.1"
+    minimatch "3.0.4"
+    mkdirp "0.5.1"
+    supports-color "5.4.0"
+
 modify-values@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/modify-values/-/modify-values-1.0.0.tgz#e2b6cdeb9ce19f99317a53722f3dbf5df5eaaab2"
@@ -5620,9 +5640,9 @@ nyc@^11.7.1:
     yargs "11.1.0"
     yargs-parser "^8.0.0"
 
-nyc@^11.7.3:
-  version "11.7.3"
-  resolved "https://registry.yarnpkg.com/nyc/-/nyc-11.7.3.tgz#164f4cfad84dee6d8f353824231d9dd683aa14ea"
+nyc@^11.8.0:
+  version "11.8.0"
+  resolved "https://registry.yarnpkg.com/nyc/-/nyc-11.8.0.tgz#1e8453b0644f8fea4d829b1a6636663157cd3b00"
   dependencies:
     archy "^1.0.0"
     arrify "^1.0.1"
@@ -6050,9 +6070,9 @@ pm-components@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/pm-components/-/pm-components-0.0.1.tgz#41aaccda2d5ff6eb0e6034555ec833c688fb8c10"
 
-pm-extension-cli@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/pm-extension-cli/-/pm-extension-cli-0.3.0.tgz#465db1f7977ff3929af517b64e2e4f4e13f88e79"
+pm-extension-cli@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/pm-extension-cli/-/pm-extension-cli-0.4.0.tgz#f53f561387914db740b995126296570f125de4d8"
   dependencies:
     babel-core "^6.26.3"
     babel-eslint "^8.2.3"
@@ -6060,6 +6080,7 @@ pm-extension-cli@^0.3.0:
     babel-plugin-add-module-exports "^0.2.1"
     babel-preset-env "^1.7.0"
     chai "^4.1.2"
+    chalk "^2.4.1"
     commander "^2.15.1"
     coveralls "^3.0.1"
     cross-env "^5.1.5"
@@ -6085,8 +6106,10 @@ pm-extension-cli@^0.3.0:
     mocha "^5.1.1"
     nyc "^11.7.1"
     sinon-chrome "^2.3.1"
+    uglifyjs-webpack-plugin "^1.2.5"
     webpack "^4.8.3"
     webpack-stream "^4.0.3"
+    yargs "^11.0.0"
 
 pn@^1.1.0:
   version "1.1.0"
@@ -7198,6 +7221,12 @@ supports-color@4.4.0:
   dependencies:
     has-flag "^2.0.0"
 
+supports-color@5.4.0, supports-color@^5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.4.0.tgz#1c6b337402c2137605efe19f10fec390f6faab54"
+  dependencies:
+    has-flag "^3.0.0"
+
 supports-color@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
@@ -7217,12 +7246,6 @@ supports-color@^4.0.0, supports-color@^4.2.1:
 supports-color@^5.1.0, supports-color@^5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.3.0.tgz#5b24ac15db80fa927cf5227a4a33fd3c4c7676c0"
-  dependencies:
-    has-flag "^3.0.0"
-
-supports-color@^5.4.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.4.0.tgz#1c6b337402c2137605efe19f10fec390f6faab54"
   dependencies:
     has-flag "^3.0.0"
 
@@ -7518,7 +7541,7 @@ uglifyjs-webpack-plugin@^0.4.6:
     uglify-js "^2.8.29"
     webpack-sources "^1.0.1"
 
-uglifyjs-webpack-plugin@^1.2.4:
+uglifyjs-webpack-plugin@^1.2.4, uglifyjs-webpack-plugin@^1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/uglifyjs-webpack-plugin/-/uglifyjs-webpack-plugin-1.2.5.tgz#2ef8387c8f1a903ec5e44fa36f9f3cbdcea67641"
   dependencies:
@@ -7998,6 +8021,23 @@ yargs-parser@^9.0.2:
 yargs@11.1.0:
   version "11.1.0"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-11.1.0.tgz#90b869934ed6e871115ea2ff58b03f4724ed2d77"
+  dependencies:
+    cliui "^4.0.0"
+    decamelize "^1.1.1"
+    find-up "^2.1.0"
+    get-caller-file "^1.0.1"
+    os-locale "^2.0.0"
+    require-directory "^2.1.1"
+    require-main-filename "^1.0.1"
+    set-blocking "^2.0.0"
+    string-width "^2.0.0"
+    which-module "^2.0.0"
+    y18n "^3.2.1"
+    yargs-parser "^9.0.2"
+
+yargs@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-11.0.0.tgz#c052931006c5eee74610e5fc0354bedfd08a201b"
   dependencies:
     cliui "^4.0.0"
     decamelize "^1.1.1"

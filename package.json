@@ -15,9 +15,9 @@
     ]
   },
   "scripts": {
-    "start": "xt-build -c .build.json -e dev",
-    "build": "xt-build -c .build.json -e prod -r",
-    "docs": "xt-docs -c .docs.json",
+    "start": "xt-build -e dev",
+    "build": "xt-build -e prod",
+    "docs": "xt-docs",
     "test": "nyc mocha ./test/*.spec.js --require babel-core/register",
     "test:coveralls": "npm run test && nyc report --reporter=text-lcov | coveralls",
     "release": "git add -A && git commit -m \"release\" && standard-version"
@@ -25,16 +25,43 @@
   "devDependencies": {
     "cws-publish": "^1.0.8",
     "pm-components": "^0.0.1",
-    "pm-extension-cli": "^0.3.0",
+    "pm-extension-cli": "^0.4.0",
     "standard-version": "^4.3.0",
     "babel-preset-env": "^1.7.0",
     "babel-core": "^6.26.3",
     "coveralls": "^3.0.1",
-    "mocha": "^5.1.1",
-    "nyc": "^11.7.3",
+    "mocha": "^5.2.0",
+    "nyc": "^11.8.0",
     "chai": "^4.1.2",
     "jsdom": "11.10.0",
     "jsdom-global": "3.0.2",
     "sinon-chrome": "^2.3.2"
+  },
+  "xtdocs": {
+    "templates": {
+      "systemName": "Sitemap Generator",
+      "systemSummary": "<img src='http://inch-ci.org/github/pikkumyy/sitemap-generator.svg?branch=master' alt='badge' /> You are viewing application source code documentation. <br/>To view details about this projects please see <a href='http://www.sneeak.com/sitemap-generator' style='color:#fff'>sneeak.com/sitemap-generator</a>",
+      "systemColor": "#009688"
+    }
+  },
+  "xtbuild": {
+    "js_bundles": [
+      {
+        "name": "background",
+        "src": "./src/background/**/*.js"
+      },
+      {
+        "name": "content",
+        "src": "./src/crawler/**/*.js"
+      },
+      {
+        "name": "setup",
+        "src": "./src/setup/setup.js"
+      },
+      {
+        "name": "process",
+        "src": "./src/process/process.js"
+      }
+    ]
   }
 }
