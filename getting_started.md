@@ -2,7 +2,7 @@
 
 This is a simplified diagram showing how the process works
 
-<img src="https://raw.githubusercontent.com/pikkumyy/sitemap-generator/master/system.png" alt='system' />
+<img src="https://raw.githubusercontent.com/pikkumyy/sitemap-generator/master/assets/system.png" alt='system' />
 
 #### Requirements
 
