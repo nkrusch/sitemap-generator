@@ -10,5 +10,8 @@
   },
   "permissionNotGranted": {
     "message": "You did not authorize access to website domain"
+  },
+  "activeSession": {
+    "message": "Instance of sitemap generator is already active. Wait for the previous instance to complete then try again."
   }
 }

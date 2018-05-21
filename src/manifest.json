@@ -9,26 +9,14 @@
   "incognito": "not_allowed",
   "minimum_chrome_version": "46",
   "homepage_url": "https://chrome.google.com/webstore/detail/hcnjemngcihnhncobgdgkkfkhmleapah",
-  "permissions": [
-    "activeTab",
-    "webRequest",
-    "webRequestBlocking",
-    "system.display"
-  ],
+  "permissions": ["activeTab", "webRequest", "webRequestBlocking", "system.display"],
   "content_security_policy": "script-src 'self' 'sha256-rwQFR+Lqw7LzDK8rVQATBE+3CIpTqJlKlhIbusXISKE=' https://www.google-analytics.com; object-src 'self'",
-  "optional_permissions": [
-    "downloads",
-    "tabs",
-    "http://*/*",
-    "https://*/*"
-  ],
+  "optional_permissions": ["downloads", "tabs", "http://*/*", "https://*/*"],
   "icons": {
     "128": "icons/128x128.png"
   },
   "background": {
-    "scripts": [
-      "background.js"
-    ],
+    "scripts": ["background.js"],
     "persistent": true
   },
   "browser_action": {

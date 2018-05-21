@@ -110,9 +110,6 @@ class Setup {
         }
         return result;
     }
-
 }
-
-(() => new Setup())();
 
 export default Setup;

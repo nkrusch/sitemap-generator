@@ -20,11 +20,7 @@ class BackgroundApi {
      */
     static resolveSetupPageUrl(url) {
 
-        let appPath = '';
-
-        if (url && url.indexOf('http') === 0) {
-            appPath = url;
-        }
+        let appPath = (url && url.indexOf('http') === 0) ? url : '';
 
         return setupPageURI + '?u=' + appPath;
     }
@@ -36,11 +32,7 @@ class BackgroundApi {
      * @see {@link https://developer.chrome.com/extensions/browserAction#event-onClicked|onClicked}
      */
     static openSetupPage(tab) {
-        if (generator) {
-            return false;
-        }
-
-        let windowUrl = BackgroundApi.resolveSetupPageUrl(tab.url);
+        let windowUrl = BackgroundApi.resolveSetupPageUrl((tab || {}).url);
 
         return CenteredPopup.open(600, 600, windowUrl, 'popup')
             .then(BackgroundApi.setupWindowId);
@@ -58,19 +50,16 @@ class BackgroundApi {
      * @see {@link https://developer.chrome.com/extensions/runtime#type-MessageSender|MessageSender}
      */
     static launchRequest(request, sender) {
-        if (!request.start) {
-            return false;
+        if (request.start) {
+            let config = request.start,
+                callback = (granted) => BackgroundApi
+                    .handleGrantResponse(granted, config, sender);
+
+            window.chrome.permissions.request({
+                permissions: ['tabs', 'downloads'],
+                origins: [config.requestDomain]
+            }, callback);
         }
-
-        let config = request.start,
-            callback = (granted) => BackgroundApi
-                .handleGrantResponse(granted, config, sender);
-
-        window.chrome.permissions.request({
-            permissions: ['tabs', 'downloads'],
-            origins: [config.requestDomain]
-        }, callback);
-        return true;
     }
 
     /**
@@ -83,12 +72,13 @@ class BackgroundApi {
         if (sender && sender.tab) {
             window.chrome.tabs.remove(sender.tab.id);
         }
-        if (granted) {
+        if (granted && !generator) {
             BackgroundApi.onStartGenerator(config);
         } else {
-            window.alert(window.chrome.i18n.getMessage('permissionNotGranted'));
+            let msg = generator ? 'activeSession' : 'permissionNotGranted';
+
+            window.alert(window.chrome.i18n.getMessage(msg));
         }
-        return granted;
     }
 
     /**
@@ -105,13 +95,9 @@ class BackgroundApi {
      * @param {Object} config - generator configuration
      */
     static onStartGenerator(config) {
-        if (generator) {
-            return false;
-        }
         config.callback = BackgroundApi.onCrawlComplete;
         generator = new Generator(config);
         generator.start();
-        return generator;
     }
 }
 

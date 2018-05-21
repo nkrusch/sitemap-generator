@@ -43,6 +43,4 @@ class Process {
     }
 }
 
-(() => new Process())();
-
 export default Process;

@@ -120,6 +120,4 @@ class Crawler {
     }
 }
 
-(() => new Crawler())();
-
 export default Crawler;

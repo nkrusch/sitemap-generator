@@ -9,33 +9,24 @@
     "type": "git",
     "url": "https://github.com/pikkumyy/sitemap-generator.git"
   },
-  "babel": {
-    "presets": [
-      "env"
-    ]
-  },
   "scripts": {
     "start": "xt-build -e dev",
     "build": "xt-build -e prod",
+    "clean": "xt-clean",
     "docs": "xt-docs",
-    "test": "nyc mocha ./test/*.spec.js --require babel-core/register",
-    "test:coveralls": "npm run test && nyc report --reporter=text-lcov | coveralls",
-    "release": "git add -A && git commit -m \"release\" && standard-version"
+    "test": "xt-test",
+    "release": "git add . && git commit && standard-version"
   },
   "devDependencies": {
     "cws-publish": "^1.0.8",
     "pm-components": "^0.0.1",
-    "pm-extension-cli": "^0.4.0",
-    "standard-version": "^4.3.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-core": "^6.26.3",
-    "coveralls": "^3.0.1",
-    "mocha": "^5.2.0",
-    "nyc": "^11.8.0",
-    "chai": "^4.1.2",
-    "jsdom": "11.10.0",
-    "jsdom-global": "3.0.2",
-    "sinon-chrome": "^2.3.2"
+    "pm-extension-cli": "0.7.0",
+    "standard-version": "^4.3.0"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
   },
   "xtdocs": {
     "templates": {
