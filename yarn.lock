@@ -5485,8 +5485,8 @@ minimist@~0.0.1:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.10.tgz#de3f98543dbf96082be48ad1a0c7cda836301dcf"
 
 minipass@^2.2.1, minipass@^2.2.4, minipass@^2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/minipass/-/minipass-2.3.1.tgz#4e872b959131a672837ab3cb554962bc84b1537d"
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/minipass/-/minipass-2.3.2.tgz#2bb00e836f1f8d44573f96b08c4f440b330072e4"
   dependencies:
     safe-buffer "^5.1.1"
     yallist "^3.0.0"
@@ -5630,8 +5630,8 @@ nanomatch@^1.2.9:
     to-regex "^3.0.1"
 
 natives@^1.1.0:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/natives/-/natives-1.1.3.tgz#44a579be64507ea2d6ed1ca04a9415915cf75558"
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/natives/-/natives-1.1.4.tgz#2f0f224fc9a7dd53407c7667c84cf8dbe773de58"
 
 natural-compare@^1.4.0:
   version "1.4.0"
@@ -6544,9 +6544,9 @@ pm-components@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/pm-components/-/pm-components-0.0.1.tgz#41aaccda2d5ff6eb0e6034555ec833c688fb8c10"
 
-pm-extension-cli@0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/pm-extension-cli/-/pm-extension-cli-0.7.0.tgz#7547c199e90a3bb8dbd9aee15c61e6adb62c86d1"
+pm-extension-cli@0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/pm-extension-cli/-/pm-extension-cli-0.7.2.tgz#74d941e1c8b1d83e88b813fb14e88e9c16d065a8"
   dependencies:
     babel-core "^6.26.3"
     babel-eslint "^8.2.3"

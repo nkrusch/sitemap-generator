@@ -1,20 +1,46 @@
 import Process from '../src/process/process';
 const fs = require('fs');
 
-let pageHTML;
-
 describe('Process Page', () => {
 
-    before(() => {
-        pageHTML = fs.readFileSync('./src/process/process.html', 'utf8');
+    before(function () {
+        global.pageHTML = fs.readFileSync(
+            './src/process/process.html', 'utf8');
         window.ga = () => { };
     });
 
     beforeEach(function () {
-        document.documentElement.innerHTML = pageHTML;
+        document.documentElement.innerHTML = global.pageHTML;
+        global.stopButton = document.getElementById('close');
+        global.stopButtonClick = () => {
+            dispatchEvent(global.stopButton, mouseEvent("click"));
+        }
+        new Process();
     });
-    
-    it('Process page initializes without error', () => {
-        expect(() => new Process()).to.not.throw();
+
+    afterEach(function () {
+        chrome.flush();
+        sandbox.restore();
+    })
+
+    after(function () {
+        delete global.pageHTML;
+        delete window.ga;
+        delete global.stopButtonClick;
+        delete global.stopButton;
+    })
+
+    it('Stop button terminates processing', () => {
+        expect(chrome.runtime.sendMessage.notCalled, 'before click').to.be.true;
+        stopButtonClick();
+        expect(chrome.runtime.sendMessage.calledOnce, 'button clicked').to.be.true;
     });
+
+    it('Renders status on page', () => {
+        let numQueue = 2, numCompleted = 3;
+        window.chrome.runtime.sendMessage.yields({ queue: numQueue, completed: numCompleted, someNonsense: 34 });
+        Process.checkStatus();
+        expect(document.getElementById('queue').innerText, 'queue display').to.equal(numQueue);
+        expect(document.getElementById('completed').innerText, 'queue display').to.equal(numCompleted);
+    });    
 });

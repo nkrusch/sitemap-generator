@@ -25,8 +25,7 @@ class Setup {
         let regex = new RegExp('[?&]' + name +
             '(=([^&#]*)|&|#|$)'), results = regex.exec(url);
 
-        if (!results) return null;
-        if (!results[2]) return '';
+        if (!results || !results[2]) return '';
         return decodeURIComponent(results[2]
             .replace(/\+/g, ' '));
     }
@@ -57,7 +56,7 @@ class Setup {
                 maxTabCount: 25
             };
 
-        window.chrome.runtime.sendMessage({start: config});
+        window.chrome.runtime.sendMessage({ start: config });
         e.target.innerText = 'Starting....';
         document.getElementById('start').onclick = false;
     }
@@ -73,8 +72,9 @@ class Setup {
             let parts = appPath.split('/'),
                 last = parts[parts.length - 1];
 
-            if (!last.length || last.indexOf('.') > 0 ||
-                last.indexOf('#') >= 0 || last.indexOf('?') >= 0) {
+            if (last.indexOf('.') > 0 ||
+                last.indexOf('#') >= 0 ||
+                last.indexOf('?') >= 0) {
                 parts.pop();
             }
             appPath = parts.join('/');
@@ -100,7 +100,7 @@ class Setup {
         }
         let error = message.length,
             className = 'is-invalid',
-            result = {url: url, error: error};
+            result = { url: url, error: error };
 
         siteUrlInputError.innerText = message;
         if (error) {

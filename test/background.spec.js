@@ -2,62 +2,66 @@ import BackgroundApi from '../src/background/backgroundApi';
 import { Generator } from '../src/background/generator/generator';
 import { CenteredPopup } from 'pm-components';
 
-let launchSpy;
-let launchRequest;
-let alertValue;
-let alertCalled;
+describe('Background Api', function () {
 
-
-describe('Background Api', () => {
-
-    before(() => {
-        launchRequest = (sender) => {
-            window.chrome.runtime.onMessage.dispatch(
-                { start: { requestDomain: 'http://www.google.com' } }, sender);
+    before(function () {
+        window.alert = function () { alertValue = alertCalled }
+        global.alertCalled = 'window alert called';
+        global.alertValue = null;
+        global.launchRequest = (sender) => {
+            chrome.runtime.onMessage.dispatch(
+                { start: { requestDomain: 'http://www.google.com' } }, sender
+            );
         };
-        alertCalled = 'called';
-        window.alert = () => { alertValue = alertCalled }
     });
-    beforeEach(() => {
-        new BackgroundApi();
-        alertValue = null;
-        launchSpy = sinon.spy(BackgroundApi, "onStartGenerator");
-    })
-    afterEach(() => {
-        if (launchSpy) launchSpy.restore();
-        BackgroundApi.onCrawlComplete();
-    })
 
-    it('clicking browser action opens setup page', () => {
-        sinon.stub(CenteredPopup, 'open');
+    beforeEach(function () {
+        new BackgroundApi(); 
+        chrome.permissions.request.yields(true);
+        sandbox.spy(BackgroundApi, "onStartGenerator");
+        sandbox.stub(CenteredPopup, 'open');
         CenteredPopup.open.resolves(1);
+        alertValue = null;
+    });
+
+    afterEach(function () {
+        BackgroundApi.onCrawlComplete();
+        chrome.flush();
+        sandbox.restore();
+    });
+
+    after(function () {
+        delete global.alertCalled;
+        delete global.launchRequest;
+        delete global.alertValue;
+    });
+
+    it('clicking browser action opens setup page', function () {
         expect(CenteredPopup.open.notCalled, 'window not opened').to.be.true;
-        window.chrome.browserAction.onClicked.dispatch({ url: "https://www.google.com" });
+        chrome.browserAction.onClicked.dispatch({ url: "https://www.google.com" });
         expect(CenteredPopup.open.calledOnce, 'window opened').to.be.true;
-        window.chrome.browserAction.onClicked.dispatch(null)
+        chrome.browserAction.onClicked.dispatch(null)
         expect(CenteredPopup.open.calledTwice, '2nd window opened').to.be.true;
     });
 
-    it('launch request starts generator', () => {
-        window.chrome.permissions.request.yields(true);
+    it('launch request starts generator', function () {
         expect(BackgroundApi.onStartGenerator.notCalled, 'launch method not called').to.be.true;
-        window.chrome.runtime.onMessage.dispatch({ wrongLaunchRequest: true });
+        chrome.runtime.onMessage.dispatch({ wrongLaunchRequest: true });
         expect(BackgroundApi.onStartGenerator.notCalled, 'launch only on start request').to.be.true;
         launchRequest({ tab: { id: 1 } });
-        expect(window.chrome.permissions.request.calledOnce, 'permissions').to.be.true;
-        expect(BackgroundApi.onStartGenerator.calledOnce, 'launch method').to.be.true;
+        expect(chrome.permissions.request.calledOnce, 'permissions requested').to.be.true;
+        expect(BackgroundApi.onStartGenerator.calledOnce, 'method launched').to.be.true;
     });
 
-    it('launch does not occur when permission not granted', () => {
-        window.chrome.permissions.request.yields(false);
+    it('launch does not occur when permission not granted', function () {
+        chrome.permissions.request.yields(false);
         expect(BackgroundApi.onStartGenerator.notCalled, 'launch method not called').to.be.true;
         launchRequest();
         expect(BackgroundApi.onStartGenerator.notCalled, 'launch method not called').to.be.true;
         expect(alertValue, 'window alert shows').to.equal(alertCalled);
     });
 
-    it('only 1 generator can run at a time', () => {
-        window.chrome.permissions.request.yields(true);
+    it('only 1 generator can run at a time', function () {
         expect(BackgroundApi.onStartGenerator.notCalled, 'launch method not called').to.be.true;
         launchRequest();
         expect(BackgroundApi.onStartGenerator.calledOnce, 'launch occurred').to.be.true;
@@ -65,5 +69,5 @@ describe('Background Api', () => {
         expect(BackgroundApi.onStartGenerator.calledOnce, '2nd launch does not occur').to.be.true;
         expect(alertValue, 'window alert shows').to.equal(alertCalled);
     });
-
+    
 });

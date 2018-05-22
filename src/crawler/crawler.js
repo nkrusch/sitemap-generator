@@ -38,13 +38,6 @@ class Crawler {
 
     /**
      * @ignore
-     */
-    static set baseUrl(value) {
-        baseUrl = encodeURI(value);
-    }
-
-    /**
-     * @ignore
      * @description Append some js code fragment in current document DOM
      * @param {String} jsCodeFragment - the code you want to execute in the document context
      */
@@ -65,8 +58,9 @@ class Crawler {
         let metas = document.getElementsByTagName('meta');
 
         for (let i = 0; i < metas.length; i++) {
-            if ((metas[i].getAttribute('name') || '').toLowerCase() === 'robots') {
-                return (metas[i].getAttribute('content') || '').toLowerCase();
+            if ((metas[i].getAttribute('name') || '').toLowerCase() === 'robots' && metas[i].getAttribute('content')) {
+                return metas[i].getAttribute('content')
+                    .toLowerCase();
             }
         }
         return '';
@@ -77,7 +71,9 @@ class Crawler {
      * so we can narrow down the matches when checking links on current page
      */
     static getBaseUrl() {
-        window.chrome.runtime.sendMessage({ crawlUrl: true }, Crawler.baseUrl);
+        window.chrome.runtime.sendMessage({ crawlUrl: true }, value => {
+            baseUrl = encodeURI(value);
+        });
     }
 
     /**

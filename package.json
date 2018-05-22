@@ -20,7 +20,7 @@
   "devDependencies": {
     "cws-publish": "^1.0.8",
     "pm-components": "^0.0.1",
-    "pm-extension-cli": "0.7.0",
+    "pm-extension-cli": "0.7.2",
     "standard-version": "^4.3.0"
   },
   "babel": {

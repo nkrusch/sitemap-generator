@@ -1,4 +1,4 @@
-import {CenteredPopup} from 'pm-components';
+import { CenteredPopup } from 'pm-components';
 import GeneratorUtils from './generatorUtils';
 import WebRequestListener from './webRequests';
 import QueueManager from './queueManager';
@@ -118,16 +118,18 @@ class Generator {
      * @param {function?} sendResponse - callback function
      */
     generatorApi(request, sender, sendResponse) {
+        if (request.status) {
+            return sendResponse(Generator.status());
+        }
+        if (request.crawlUrl) {
+            return sendResponse(url);
+        }
         if (request.terminate) {
             this.onComplete();
         } else if (request.noindex) {
             Generator.excludeFromIndex(request.noindex);
         } else if (request.urls) {
             this.urlMessageReceived(request.urls, sender);
-        } else if (request.status) {
-            return sendResponse(Generator.status());
-        } else if (request.crawlUrl) {
-            return sendResponse(url);
         }
         return false;
     }
