@@ -15,6 +15,7 @@
     "clean": "xt-clean",
     "docs": "xt-docs",
     "test": "xt-test",
+    "test:coveralls": "xt-test --coveralls",
     "release": "git add . && git commit && standard-version"
   },
   "devDependencies": {
