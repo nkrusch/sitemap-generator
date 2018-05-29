@@ -18,16 +18,19 @@
     "release": "git add . && git commit && standard-version"
   },
   "devDependencies": {
-    "cws-publish": "^1.0.8",
+    "cws-publish": "^1.0.9",
     "pm-components": "^0.0.1",
-    "pm-extension-cli": "0.7.2",
-    "standard-version": "^4.3.0"
+    "pm-extension-cli": "0.7.5",
+    "standard-version": "^4.4.0"
   },
   "babel": {
     "presets": [
       "env"
     ]
   },
+  "eslintIgnore": [
+    "test/**/*"
+  ],
   "xtdocs": {
     "templates": {
       "systemName": "Sitemap Generator",
