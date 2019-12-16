@@ -2,13 +2,8 @@
   "name": "sitemap-generator",
   "version": "0.1.8",
   "license": "MIT",
-  "author": "Professor Chaos",
+  "author": "Neea Rusch",
   "description": "Use chrome browser to generate sitemaps for your websites. This extension crawls website like a real user.",
-  "homepage": "https://github.com/pikkumyy/sitemap-generator",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/pikkumyy/sitemap-generator.git"
-  },
   "scripts": {
     "start": "xt-build -e dev",
     "build": "xt-build -e prod",
@@ -18,9 +13,7 @@
     "release": "git add . && git commit && standard-version"
   },
   "devDependencies": {
-    "cws-publish": "^1.0.9",
-    "pm-components": "^0.0.1",
-    "pm-extension-cli": "0.7.5",
+    "pm-extension-cli": "^0.7.11",
     "standard-version": "^4.4.0"
   },
   "babel": {

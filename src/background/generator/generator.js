@@ -1,4 +1,4 @@
-import { CenteredPopup } from 'pm-components';
+import CenteredPopup from '../../components/centeredPopup';
 import GeneratorUtils from './generatorUtils';
 import WebRequestListener from './webRequests';
 import QueueManager from './queueManager';

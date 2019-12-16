@@ -1,12 +1,12 @@
 # Sitemap Generator
 
-Generate sitemaps using Chrome browser. Especially intended for generating sitemaps for single-page apps made with react, angular, etc.
+Generate sitemaps using Chrome browser. Especially intended for generating sitemaps for single-page apps.
 
 ## Installation
 
 The latest version is available for installation at Chrome Web Store.
 
-**[Install here](https://chrome.google.com/webstore/detail/hcnjemngcihnhncobgdgkkfkhmleapah "Sitemap Generator")**
+#### [Install here](https://chrome.google.com/webstore/detail/hcnjemngcihnhncobgdgkkfkhmleapah "Sitemap Generator")
     
     
 ## Idea 💡

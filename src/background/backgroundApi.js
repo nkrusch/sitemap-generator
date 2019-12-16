@@ -1,4 +1,4 @@
-import { CenteredPopup } from 'pm-components';
+import CenteredPopup from '../components/centeredPopup';
 import Generator from './generator/generator.js';
 
 let generator;
