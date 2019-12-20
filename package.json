@@ -4,27 +4,33 @@
   "license": "MIT",
   "author": "Neea Rusch",
   "description": "Use chrome browser to generate sitemaps for your websites. This extension crawls website like a real user.",
+  "dependencies": {
+    "extension-cli": "0.8.2",
+    "standard-version": "^7.0.1"
+  },
   "scripts": {
-    "start": "xt-build -e dev",
+    "start": "xt-build -e dev -w",
     "build": "xt-build -e prod",
     "clean": "xt-clean",
     "docs": "xt-docs",
     "test": "xt-test",
     "release": "git add . && git commit && standard-version"
   },
-  "devDependencies": {
-    "pm-extension-cli": "^0.7.11",
-    "standard-version": "^7.0.1"
-  },
   "babel": {
     "presets": [
-      "env"
+      "@babel/preset-env"
     ]
   },
   "eslintIgnore": [
     "test/**/*"
   ],
   "xtdocs": {
+    "source": {
+      "include": [
+        "README.md",
+        "src"
+      ]
+    },
     "templates": {
       "systemName": "Sitemap Generator",
       "systemSummary": "<img src='http://inch-ci.org/github/pikkumyy/sitemap-generator.svg?branch=master' alt='badge' /> You are viewing application source code documentation.",

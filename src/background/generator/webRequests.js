@@ -59,7 +59,7 @@ class WebRequestListeners {
 
         let modifyListener = (event, callback, filters) => {
             window.chrome.webRequest[event][action](callback,
-                { urls: [requestDomain], types: ['main_frame'] }, filters);
+                {urls: [requestDomain], types: ['main_frame']}, filters);
         };
 
         window.chrome.runtime.onMessage[action](onMessageCallback);
@@ -72,7 +72,7 @@ class WebRequestListeners {
 
         window.chrome.webRequest.onErrorOccurred[action](
             WebRequestListeners.onTabErrorHandler,
-            { urls: [requestDomain], types: ['main_frame'] });
+            {urls: [requestDomain], types: ['main_frame']});
     }
 
     /**
@@ -99,7 +99,7 @@ class WebRequestListeners {
             cancel = true;
         }
 
-        return { cancel: cancel };
+        return {cancel: cancel};
     }
 
     /**
@@ -124,7 +124,7 @@ class WebRequestListeners {
     static onBeforeRedirect(details) {
         onUrlsCallback([details.redirectUrl]);
         window.chrome.tabs.remove(details.tabId);
-        return { cancel: true };
+        return {cancel: true};
     }
 
     /**

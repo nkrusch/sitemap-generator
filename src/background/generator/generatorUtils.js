@@ -1,4 +1,3 @@
-// const downloadsPage = 'chrome://downloads';
 
 /**
  * @class
@@ -126,9 +125,7 @@ class GeneratorUtils {
         window.chrome.tabs.query({
             windowId: windowId,
             url: domain
-        }, (tabs) => {
-            callback(tabs || []);
-        });
+        }, callback);
     }
 
     /**

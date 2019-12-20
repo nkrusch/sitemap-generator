@@ -1,46 +1,53 @@
 import Process from '../src/process/process';
+import Libs from './_mock';
+
 const fs = require('fs');
 
 describe('Process Page', () => {
 
     before(function () {
-        global.pageHTML = fs.readFileSync(
-            './src/process/process.html', 'utf8');
-        window.ga = () => { };
+        window.ga = Libs.Analytics;
+
+        // read the page HTML
+        window.pageHTML = fs.readFileSync('./src/process/process.html', 'utf8');
     });
 
     beforeEach(function () {
-        document.documentElement.innerHTML = global.pageHTML;
-        global.stopButton = document.getElementById('close');
-        global.stopButtonClick = () => {
-            dispatchEvent(global.stopButton, mouseEvent("click"));
-        }
+
+        // reset page HTML
+        document.documentElement.innerHTML = window.pageHTML;
+
+        // override timeout behavior
+        Libs.bindTimeoutBehavior();
+
+        // add page script
         new Process();
     });
 
-    afterEach(function () {
-        chrome.flush();
-        sandbox.restore();
-    })
-
     after(function () {
-        delete global.pageHTML;
+        delete window.pageHTML;
         delete window.ga;
-        delete global.stopButtonClick;
-        delete global.stopButton;
-    })
-
-    it('Stop button terminates processing', () => {
-        expect(chrome.runtime.sendMessage.notCalled, 'before click').to.be.true;
-        stopButtonClick();
-        expect(chrome.runtime.sendMessage.calledOnce, 'button clicked').to.be.true;
     });
 
-    it('Renders status on page', () => {
-        let numQueue = 2, numCompleted = 3;
-        window.chrome.runtime.sendMessage.yields({ queue: numQueue, completed: numCompleted, someNonsense: 34 });
+    it('Clicking stop button terminates processing', () => {
+
+        Process.stopButton.click();
+
+        expect(chrome.runtime.sendMessage.withArgs({terminate: true})
+            .called, 'button clicked').to.be.true;
+    });
+
+    it('Renders status on page during processing', () => {
+        let queue = 2, completed = 3;
+
+        window.chrome.runtime.sendMessage.yields({queue, completed, someNonsense: 34});
+
         Process.checkStatus();
-        expect(document.getElementById('queue').innerText, 'queue display').to.equal(numQueue);
-        expect(document.getElementById('completed').innerText, 'queue display').to.equal(numCompleted);
-    });    
+
+        expect(document.getElementById('queue').innerText,
+            'queue display').to.equal(queue);
+
+        expect(document.getElementById('completed').innerText,
+            'queue display').to.equal(completed);
+    });
 });

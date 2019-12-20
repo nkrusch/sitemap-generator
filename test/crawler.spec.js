@@ -1,38 +1,46 @@
 import Crawler from '../src/crawler/crawler';
+import Libs from "./_mock";
 
 describe('Page Crawler', () => {
 
-    before(function () {
-        global.pageHTML = (html) => { document.documentElement.innerHTML = html }
-    });
+    /**
+     * Change page DOM
+     * @param html - any html to load as page DOM
+     */
+    function pageHTML(html) {
+        document.documentElement.innerHTML = html;
+    }
 
     beforeEach(function () {
-        chrome.runtime.sendMessage.withArgs({ crawlUrl: true })
-            .yields("https://www.google.com");
-    })
+        const url = "https://www.google.com";
 
-    afterEach(function () {
-        chrome.flush();
-        sandbox.restore();
-    })
+        // crawlUrl returns base domain
+        chrome.runtime.sendMessage.withArgs({crawlUrl: true}).yields(url);
 
-    after(function () {
-        delete global.pageHTML;
-    })
+        // override timeout behavior
+        Libs.bindTimeoutBehavior();
+    });
 
     it('findLinks dispatches a message with hrefs', () => {
         pageHTML("<html><head></head><body>" +
             "<a href='home.html'>Home</a>" +
             "<a href='https://www.google.com/images'>Google images</a>" +
-            "<a href='//www.google.com/app/path'>no protocol</a></body></html>");
-        new Crawler();
-        chrome.runtime.sendMessage.flush();
+            "<a href='//www.google.com/app/path'>no protocol</a>" +
+            "</body></html>");
 
-        expect(chrome.runtime.sendMessage.notCalled, 'message not sent').to.be.true;
-        window.onload();
-        expect(chrome.runtime.sendMessage.calledOnce, 'message sent once').to.be.true;
+        // this assumes page is about:blank;
+        // TODO: need to be able to change page location href
+        const urls = ['://', 'https://www.google.com/images'];
+
+        chrome.runtime.sendMessage.flush();
+        new Crawler();
+
+        expect(chrome.runtime.sendMessage.withArgs({urls})
+            .calledOnce, 'message sent once').to.be.true;
+
         Crawler.findLinks();
-        expect(chrome.runtime.sendMessage.calledOnce, 'only executes 1 time').to.be.true;
+        expect(chrome.runtime.sendMessage.withArgs({urls})
+            .calledOnce, 'only executes 1 time').to.be.true;
     });
 
     it('correctly handles pages with nofollow header', () => {
@@ -40,8 +48,12 @@ describe('Page Crawler', () => {
             "<meta content='badmetatag'/>" +
             "<meta name='robots' content='nofollow' />" +
             "</head><body></body></html>");
+
+        chrome.runtime.sendMessage.flush();
         new Crawler();
-        expect(window.chrome.runtime.sendMessage.withArgs({ urls: [] }).calledOnce).to.be.true;
+
+        expect(window.chrome.runtime.sendMessage
+            .withArgs({urls: []}).called).to.be.true;
     });
 
     it('correctly handles pages with noindex header', () => {
@@ -50,7 +62,9 @@ describe('Page Crawler', () => {
             "<meta name='robots' content='noindex' />" +
             "</head><body></body></html>");
         new Crawler();
-        expect(window.chrome.runtime.sendMessage.withArgs({ noindex: window.location.href }).calledOnce).to.be.true;
+        expect(window.chrome.runtime.sendMessage
+            .withArgs({ noindex: window.location.href })
+            .calledOnce).to.be.true;
     });
 
 });

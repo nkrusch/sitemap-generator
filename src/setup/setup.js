@@ -1,6 +1,7 @@
 /**
  * @class
- * @description This module is used to configure runtime params for sitemap generation
+ * @description This module is used to configure runtime parameters
+ * before generating a sitemap.
  */
 class Setup {
 
@@ -10,28 +11,33 @@ class Setup {
             siteUrlInput = document.getElementsByName('url')[0],
             startButton = document.getElementById('start');
 
-        // the initial url will be active tab url if available
+        /**
+         * Initialize input and bind click actions;
+         * The initial crawl url will be active tab url if url is available
+         **/
         siteUrl = Setup.removePageFromUrl(siteUrl);
         siteUrlInput.value = siteUrl;
         startButton.onclick = Setup.onStartButtonClick;
     }
 
     /**
-     * @ignore
-     * @description Get property from window url
+     * @static
+     * @description Searches for and returns queryString value
+     * by key. If key does not exist or has no value, this method
+     * returns an empty string.
+     * @param {string} name - query string key
+     * @param {string} url - url or querystring to search
+     * @returns {string} - value if exists; otherwise empty string
      */
     static getParameterByName(name, url) {
-        name = name.replace(/[\[\]]/g, '\\$&');
-        let regex = new RegExp('[?&]' + name +
-            '(=([^&#]*)|&|#|$)'), results = regex.exec(url);
+        const i = url.indexOf('?') + 1;
 
-        if (!results || !results[2]) return '';
-        return decodeURIComponent(results[2]
-            .replace(/\+/g, ' '));
+        const urlParams = new URLSearchParams(url.substr(i));
+
+        return urlParams.has(name) ? urlParams.get(name) : '';
     }
 
     /**
-     * @ignore
      * @description Handle start button click -> this will check user inputs
      * and if successful, send message to background page to initiate crawling.
      * @param {Object} e - click event
@@ -50,19 +56,20 @@ class Setup {
                 url: url,
                 requestDomain: requestDomain,
                 contenttypePatterns: ['text/html', 'text/plain'],
-                excludeExtension: ['.png', '.json', '.jpg', '.jpeg', '.js', '.css',
-                    '.zip', '.mp3', '.mp4', '.ogg', '.avi', '.wav', '.webm', '.gif', '.ico'],
+                excludeExtension: [
+                    '.png', '.json', '.jpg', '.jpeg', '.js', '.css',
+                    '.zip', '.mp3', '.mp4', '.ogg', '.avi', '.wav',
+                    '.webm', '.gif', '.ico'],
                 successCodes: [200, 201, 202, 203, 304],
                 maxTabCount: 25
             };
 
-        window.chrome.runtime.sendMessage({ start: config });
+        window.chrome.runtime.sendMessage({start: config});
         e.target.innerText = 'Starting....';
         document.getElementById('start').onclick = false;
     }
 
     /**
-     * @ignore
      * @description if url ends with page e.g. "index.html" we want to remove
      * this and just keep the application path
      * @param {String} appPath - url
@@ -83,7 +90,6 @@ class Setup {
     }
 
     /**
-     * @ignore
      * @description Make sure url input is correct
      * @returns {Object} - validation response
      */
@@ -100,7 +106,7 @@ class Setup {
         }
         let error = message.length,
             className = 'is-invalid',
-            result = { url: url, error: error };
+            result = {url: url, error: error};
 
         siteUrlInputError.innerText = message;
         if (error) {

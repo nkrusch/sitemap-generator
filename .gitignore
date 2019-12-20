@@ -4,4 +4,7 @@ node_modules/
 coverage/
 dist/
 docs/
+public/
+public/documentation/
 release.zip
+yarn-error.log

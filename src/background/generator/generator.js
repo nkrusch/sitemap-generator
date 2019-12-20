@@ -75,7 +75,8 @@ class Generator {
      * @description Initiates crawling of some website
      */
     start() {
-        const launchPage = window.chrome.extension.getURL('process.html');
+        const launchPage = window.chrome.extension.getURL('process.html'), that = this;
+
         let onError = (u) => {
             lists.error.add(u);
         }, onSuccess = (u) => {
@@ -95,14 +96,14 @@ class Generator {
             });
 
         CenteredPopup.open(800, 800, launchPage, 'normal')
-            .then((window) => {
-                targetRenderer = window.id;
+            .then(w => {
+                targetRenderer = w.id;
                 // 1. add the first url to processing queue
                 lists.pending.add(url);
                 // 2. navigate to first url
-                this.navigateToNext();
+                that.navigateToNext();
                 // 3. start interval that progressively works through the queue
-                progressInterval = setInterval(this.navigateToNext, 500);
+                progressInterval = window.setInterval(this.navigateToNext, 500);
             });
     }
 
@@ -159,9 +160,9 @@ class Generator {
 
         }).filter(function (u) {
 
-            let test = u.replace(url, '');
-            let badFileExtension = GeneratorUtils
-                .testFileExtension(test, excludeExtension);
+            let test = u.replace(url, ''),
+                badFileExtension = GeneratorUtils
+                    .testFileExtension(test, excludeExtension);
 
             // filter down to new urls in target domain
             // + exclude everything that is clearly not html/text
@@ -184,16 +185,16 @@ class Generator {
             return;
         }
         terminating = true;
-        clearInterval(progressInterval);
+        window.clearInterval(progressInterval);
         let sitemap = () => GeneratorUtils
             .makeSitemap(url, lists.success.items);
 
         (function closeRenderer() {
             GeneratorUtils.getExistingTabs(targetRenderer, requestDomain,
                 (result) => {
-                    if (result.length) {
+                    if (result && result.length) {
                         GeneratorUtils.closeTabs(result);
-                        setTimeout(closeRenderer, 250);
+                        window.setTimeout(closeRenderer, 250);
                     } else {
                         requestListener.destroy();
                         onCompleteCallback();
@@ -213,7 +214,7 @@ class Generator {
         }
 
         GeneratorUtils.getExistingTabs(
-            targetRenderer, requestDomain, (tabs) => {
+            targetRenderer, requestDomain, tabs => {
                 Generator.nextAction(!!tabs.length,
                     lists.pending.empty, this.onComplete);
             });
@@ -227,17 +228,14 @@ class Generator {
     static nextAction(openTabs, emptyQueue, onComplete) {
         if (!openTabs && emptyQueue && initialCrawlCompleted) {
             onComplete();
-        }
-        if (emptyQueue || openTabs > maxTabCount) {
-            return;
-        }
+        } else if (!(emptyQueue || openTabs > maxTabCount)) {
+            let nextUrl = lists.pending.first;
 
-        let nextUrl = lists.pending.first;
-
-        if (!lists.complete.contains(nextUrl)) {
-            lists.complete.add(nextUrl);
-            GeneratorUtils.launchTab(targetRenderer, nextUrl,
-                onComplete);
+            if (!lists.complete.contains(nextUrl)) {
+                lists.complete.add(nextUrl);
+                GeneratorUtils.launchTab(targetRenderer, nextUrl,
+                    onComplete);
+            }
         }
     }
 

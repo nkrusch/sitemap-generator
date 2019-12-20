@@ -109,7 +109,7 @@
         }
       ],
       "newline-after-var": [
-        2,
+        1,
         "always"
       ],
       "new-parens": 2,
