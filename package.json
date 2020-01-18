@@ -5,7 +5,7 @@
   "author": "Neea Rusch",
   "description": "Use chrome browser to generate sitemaps for your websites. This extension crawls website like a real user.",
   "dependencies": {
-    "extension-cli": "0.8.6",
+    "extension-cli": "^0.8.7",
     "standard-version": "^7.0.1"
   },
   "scripts": {
@@ -33,7 +33,7 @@
     },
     "templates": {
       "systemName": "Sitemap Generator",
-      "systemSummary": "<img src='http://inch-ci.org/github/pikkumyy/sitemap-generator.svg?branch=master' alt='badge' /> You are viewing application source code documentation.",
+      "systemSummary": "Chrome extension for generating sitemaps on the client side",
       "systemColor": "#009688"
     }
   },
