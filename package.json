@@ -5,8 +5,12 @@
   "author": "Neea Rusch",
   "description": "Use chrome browser to generate sitemaps for your websites. This extension crawls website like a real user.",
   "dependencies": {
-    "extension-cli": "^0.8.8",
+    "extension-cli": "^0.8.9",
     "standard-version": "^7.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nkrusch/sitemap-generator.git"
   },
   "scripts": {
     "start": "xt-build -e dev -w",

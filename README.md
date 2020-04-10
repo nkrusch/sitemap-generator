@@ -24,3 +24,22 @@ I make a lot of web apps using react and angular. I know there are dev tools tha
 This extension works by taking some start URL, crawling that page for more links, and then recursively crawling those pages for more links. Once all found links have been checked, the extension generates a sitemap file. Of course this approach assumes website is properly using anchor tags to connect its contents. The extension also checks HTTP headers and excludes pages that return failing response codes.
 
 This implementation is not practical if website contains tens of thousands of pages. It can however, crawl a few thousand entries in a reasonable amount of time. Also note while the sitemap is being generated, you may continue regular browsing at the same time. The generator will run in its own window.
+
+
+# Development
+
+```text
+npm install
+```
+
+Debug:
+
+```text
+npm run start
+```
+
+Build:
+
+```text
+npm run build
+```
