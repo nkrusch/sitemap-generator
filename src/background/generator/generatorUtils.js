@@ -179,7 +179,8 @@ class GeneratorUtils {
      */
     static urlFormatter(u, lists) {
         // make sure all urls are encoded
-        u = encodeURI(u);
+        if( u === decodeURIComponent(u))
+            u = encodeURI(u);
 
         // if SHEBANG
         if (u.indexOf('#!') > 0) {
