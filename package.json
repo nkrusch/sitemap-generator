@@ -6,7 +6,7 @@
   "description": "Use chrome browser to generate sitemaps for your websites. This extension crawls website like a real user.",
   "dependencies": {
     "extension-cli": "^0.8.9",
-    "standard-version": "^7.1.0"
+    "standard-version": "^8.0.1"
   },
   "repository": {
     "type": "git",
