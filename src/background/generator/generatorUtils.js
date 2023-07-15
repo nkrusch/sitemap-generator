@@ -34,7 +34,12 @@ class GeneratorUtils {
         }
         let entries = successUrls.sort().map((u) => {
             return '<url><loc>{u}</loc></url>'
-                .replace('{u}', encodeURI(u));
+                .replace('{u}', encodeURI(u)
+                         .replace(/&/g, '&amp;')
+                         .replace(/</g, '&lt;')
+                         .replace(/>/g, '&gt;')
+                         .replace(/"/g, '&quot;')
+                         .replace(/'/g, '&apos;'));
         });
 
         let sitemap = [
